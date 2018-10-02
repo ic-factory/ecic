@@ -63,13 +63,15 @@ Creating a **new** RTL design can be done with the `ecic generate design` comman
 
 The type of RTL design (VHDL or Verilog) to create is controlled by a `--type=vhdl|verilog` option and defaults to the value defined by the `config.generator.library.type.default` setting in the `./src/config/ecic.rb` configuratinon file.
 
-To see the full list of options for the `ecic generate design` command, run `ecic generate help design`.
+The `ecic generate design` command can be called from any directory within your project. To see the full list of options for the `ecic generate design` command, run `ecic generate help design`.
 
 #### Create new VHDL design(s)
 
 To create a new VHDL design called `my_design1` and associate it with a library called `my_lib`, run:
 
-    $ ecic generate design --type=vhdl my_lib my_design1
+    $ ecic generate design --type=vhdl --lib=my_lib my_design1
+
+If you specify a library that does not exist, you will be asked to confirm the creation of the new library.
 
 When creating a new VHDL design, you will be given the option to also create and include a `types and constants` package definition file.
 
@@ -82,15 +84,15 @@ The following VHDL files will be created (relative to the project root folder):
 
 Placing each component, entity and architecture in separate files allows a projects to be recompiled very fast when only a few files have been modified, since eg. an update that is isolated to a single RTL architecture only requires that one file to be recompiled. Splitting the entity and architecture into separate files also allows you to have multiple architectures for the save entity and choose between the architecture files at compile time without having to use `VHDL configuration` constructs.
 
-Should you wish to combine eg. the entity and architecture files into one file, you can configure `ECIC` to do this by default by setting `config.generator.design.vhdl.combine` option in `./src/config/ecic.rb`:
+Should you still wish to combine eg. the entity and architecture files into one file, you can configure `ECIC` to do this by default by setting `config.generator.design.vhdl.combine` option in `./src/config/ecic.rb`:
 
     config.generator.design.vhdl.combine = 'entity + architecture'
 
-If you specify a library that does not exist, you will be asked to confirm the creation of the new library.
+##### Create multiple VHDL design for the same library
 
-You can create multiple designs at the same time, and designs can be placed in subfolders within a library. For example, to create a new VHDL design called `my_design2` at the root of a `my_lib` library and create another VHDL design called `my_design3` in a subfolder called `my_subblock`, run:
+You can create multiple designs at the same time, and designs can be placed in subfolders within a library. For example, to create a new VHDL design called `my_design2` at the root of a library called `my_lib` and create another VHDL design called `my_design3` in a subfolder called `my_subblock`, run:
 
-    $ ecic generate design --type=vhdl --types-package my_lib my_design2 my_subblock/my_design3
+    $ ecic generate design --type=vhdl --types-package --lib=my_lib my_design2 my_subblock/my_design3
 
 This will create the following VHDL files (relative to the project root folder):
 
@@ -107,19 +109,33 @@ In this example the `--types-package` option is used to automatically include th
  
 All generated VHDL files will be added to the `sources.rb` file in the given library.
 
-#### Create new SystemVerilog file
+#### Create new SystemVerilog file(s)
 
 The procedure for creating SystemVerilog files is the same as for generating VHDL files, except that the `--type` option must be set to `sv`.
 
-For example, to create one SystemVerilog module called `my_design1` and place it with a library called `my_lib`, run:
+For example, to create two SystemVerilog modules called `my_design1` and `my_design2` and place them in separate subfolders within a library called `my_lib`, run:
 
-    $ ecic generate design --type=sv my_lib my_design1
+    $ ecic generate design --type=sv --lib=my_lib my_design1 my_design2
 
 This will create the following SystemVerilog files (relative to the project root folder):
 
-    ./src/design/my_lib/my_blk/my_design1.sv    # SystemVerilog module
+    ./src/design/my_lib/my_design1.sv    # SystemVerilog module
+    ./src/design/my_lib/my_design2.sv    # SystemVerilog module
 
 All generated SystemVerilog files will be added to the `sources.rb` file in the given library.
+
+#### Omitting the --lib option
+
+If the `ecic generate design` command is called from within a library folder (or subfolder), the `--lib` option can be omitted, in which case the new designs will be created for that library. The files will be placed relative to the current working directory.
+
+Example:
+
+    $ cd ./src/design/queue_system/arbitor
+    $ ecic generate design --type=vhdl statemachine
+
+That will generate the files as:
+
+    ./src/design/queue_system/arbitor/statemachine-*.vhd      #Path is relative to the project root folder
 
 ## Migrating an existing project to use ECIC
 
@@ -133,9 +149,19 @@ If the folder contains files that will normally be overwritten by the framework,
 
 To add an existing RTL file to the project, go to the project folder and use the `ecic add design` commmand. This will add all the listed files to the given design library. If the library does not already exist, you will be asked to confirm the creation of it.
 
-For example, to add two existing files 
+For example, to add two existing files named `./foo/bar/some_design.sv` and `../toto/kuku.vhd` to a library called `my_lib`, run:
 
-    $ ecic add design LIBRARY FILE <FILE>...
+    $ ecic add design my_lib ./foo/bar/some_design.sv ../toto/kuku.vhd
+
+Although all files that belong to a given library should be placed in the folder for that library, you can specify files that are placed anywhere in your file system.
+
+If you have a Unix like terminal and want to eg. add all files in a `./foo` folder that has the extension `.vhd`, you can use the standard Unix `find` command:
+
+    $ ecic add design my_lib `find ./foo -name "*.vhd"`
+
+When adding files to the project, the file extension (eg. vhd) is used to determine the file type. VHDL files are expected to have a .vhd or .vhdl extension and Verilog/SystemVerilog files are expected to have a .sv og .v extension. You can also specify the file type with a `type=vhdl|sv` option, eg.:
+
+    $ ecic add design --type=vhdl my_lib `find ./foo -name "*.*"`
 
 ## Compiling and elaborating RTL files
 
