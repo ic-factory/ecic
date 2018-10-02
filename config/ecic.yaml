@@ -1,0 +1,9 @@
+ecic:
+  config:
+    generator:
+      library:
+        type:
+         default: vhdl
+      design:
+        vhdl:
+          combine: ''

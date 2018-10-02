@@ -1,0 +1,6 @@
+#Syntax for sources.rb
+
+add design   chip, :env => ['asic_rtl', 'asic_gate', 'fpga_rtl']
+add design   [basic_vhdl, chip], :except => {:env => ['asic']}
+#add design chip_tb, :path => '/some/absolute/path'
+#add testbench chip_tb, :path => '/some/absolute/path'

@@ -1,0 +1,31 @@
+help:
+  new:
+    short: Generate a new project called NAME
+    long:  |
+      Creates a new chip project called NAME.
+   
+      Example: ecic new my_project
+
+      This creates a new project called 'my_project' in ./my_project
+  generate:
+    short: Generate new testbenches, RTL modules, tests etc.!
+  generators:
+    testbench:
+      short: Create a new testbench
+      long: |
+        Create a new VHDL, SystemVerilog or UVM testbench.
+        The testbench type MUST be defined with the --type option.
+
+        Example: ecic generate testbench my_tb --type=uvm --verbose
+
+        This creates a new UVM testbench called 'my_tb' in ./src/testbench/my_tb and prints info along the way
+        
+    library:
+      short: Create a new library
+      long: |
+            Create a new VHDL/SystemVerilog library.
+            
+            Example: ecic generate library lib1 lib2 lib3...
+
+            This creates the given libraries in the ./src/design/ directory of 
+            your project and adds the libraries to ./src/config/libraries.rb
