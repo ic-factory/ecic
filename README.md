@@ -172,8 +172,6 @@ To compile and elaborate your project, simply run:
     $ ecic compile [SCOPE]
 
 SystemVerilog files will be compiled in the order they are listed in the sources.rb files and they will be compiled before any VHDL files.
-before any 
-
 
 ## Development
 
