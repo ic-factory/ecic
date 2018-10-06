@@ -13,99 +13,14 @@
 # If the user tries to call the 'generate' command outside a project, 
 # an error message must be returned stating that this command can only be called from within a project.
 
+$:.unshift(File.expand_path("../", __FILE__))
 require "ecic/version"
 
 module Ecic
-  require 'yaml'
-  require 'thor'
-  require 'thor/group'
-  require "ecic/project_generator"
-  require "ecic/library_generator"
-
-  def self.help_text
-    YAML.load(File.read(File.expand_path("../../config/locales/help.en.yaml", __FILE__)))['help']
-  end
-
-  #TBA: Make a function that returns the root folder for the project
-  def self.root
-    File.expand_path("./tfj2")
-  end
-
-  class Generate < Thor
-    #--------------------------------------------------------------------------
-    # TESTBENCH generator:
-    #--------------------------------------------------------------------------
-    class_option :verbose, :type => :boolean
-
-    desc "testbench NAME", Ecic::help_text['generators']['testbench']['short']
-    long_desc Ecic::help_text['generators']['testbench']['long']
-    option :type, :banner => 'vhdl|sv|uvm', :required => true, :desc => 'Speficy the testbench type (VHDL, SystemVerilog or UVM)'
-    option :just_print, :type => :boolean, :aliases => '-n', :desc => "Don't actually run any commands; just print them."
-    def testbench(name)
-      puts "Implement a generator for creating a new testbench"
-    end
-
-    desc "library NAME...", Ecic::help_text['generators']['library']['short']
-    long_desc Ecic::help_text['generators']['library']['long']
-    option :just_print, :type => :boolean, :aliases => '-n', :desc => "Don't actually run any commands; just print them."
-#    def library(names)
-    def library(lib_name)
-      generator = LibraryGenerator.new
-      generator.destination_root = Ecic::root
-#      names.each do |lib_name|
-        generator.library_name = lib_name
-        generator.invoke_all
-#      end
-    end
-        
-  end  
-
-  class Cli < Thor
-
-    check_unknown_options!
-
-    #Make sure to return non-zero value if an error is thrown.
-    def self.exit_on_failure?
-      true
-    end
-    
-    class << self
-      def help(shell, subcommand = false)
-        shell.say "Usage: ecic COMMAND [ARGS]"
-        shell.say ""
-        super
-        shell.say "To get more help on a specific command, try 'ecic help [COMMAND]'"
-      end
-    end
-
-    #--------------------------------------------------------------------------
-    # VERSION command:
-    #--------------------------------------------------------------------------
-    desc 'version', 'Display version'
-    map %w[-v --version] => :version
-    def version
-      say "#{VERSION}"
-    end
-
-    #--------------------------------------------------------------------------
-    # NEW command:
-    #--------------------------------------------------------------------------
-    long_desc Ecic::help_text['new']['long']
-    desc "new PATH", Ecic::help_text['new']['short']
-    option :verbose, :type => :boolean
-    def new(path)
-      path = File.expand_path(path)
-      puts "Generating a new project in #{path}"
-      generator = ProjectGenerator.new
-      generator.destination_root = path
-      generator.invoke_all
-      #TBA: invoke installation by eg. calling 'bundler install' from within the generate project folder
-      
-    end
-
-    desc "generate SUBCOMMAND ...ARGS", Ecic::help_text['generate']['short']
-    subcommand "generate", Generate
-
-  end
-  
+  autoload :Help, "ecic/help"
+  autoload :Command, "ecic/command"
+  autoload :CLI, "ecic/cli"
+  autoload :Generate, "ecic/generate"
+  autoload :Completion, "ecic/completion"
+  autoload :Completer, "ecic/completer"
 end

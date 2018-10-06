@@ -1,6 +1,6 @@
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
-# Specify your gem's dependencies in ecic.gemspec
+# Specify your gem dependencies in ecic.gemspec
 gemspec
 
-gem 'thor'
+gem "codeclimate-test-reporter", group: :test, require: nil

@@ -1,4 +1,4 @@
-# Easy IC : open-source, cross-platform framework for developing digital ASIC and FPGA designs
+# Easy IC
 
 ## NOTE: this project has just been started. Hence, the description below is what will come in the future, but none of the features have been implemented yet.
 
@@ -183,4 +183,12 @@ To install the ECIC framework onto your local machine, run `bundle exec rake ins
 -->
 ## Contributing
 
+1. Fork it
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am "Add some feature"`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request
+
 Bug reports and pull requests are welcome on GitHub at https://github.com/ic-factory/ecic.
+
+
