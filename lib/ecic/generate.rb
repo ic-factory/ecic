@@ -4,18 +4,21 @@ module Ecic
     #--------------------------------------------------------------------------
     # TESTBENCH generator:
     #--------------------------------------------------------------------------
-    class_option :verbose, :type => :boolean
+####    class_option :verbose, :type => :boolean
+####    desc "testbench NAME", Help.text('generate')['testbench']['short']
+####    long_desc Help.text('generate')['testbench']['long']
+####    option :type, :banner => 'vhdl|sv|uvm', :required => true, :desc => 'Speficy the testbench type (VHDL, SystemVerilog or UVM)'
+####    option :just_print, :type => :boolean, :aliases => '-n', :desc => "Don't actually run any commands; just print them."
+####    def testbench(name)
+####      puts "Implement a generator for creating a new testbench"
+####    end
 
-    desc "testbench NAME", Help.short_text("generate:testbench")
-    long_desc Help.text("generate:testbench")
-    option :type, :banner => 'vhdl|sv|uvm', :required => true, :desc => 'Speficy the testbench type (VHDL, SystemVerilog or UVM)'
-    option :just_print, :type => :boolean, :aliases => '-n', :desc => "Don't actually run any commands; just print them."
-    def testbench(name)
-      puts "Implement a generator for creating a new testbench"
-    end
-
-    desc "library NAME...", Help.short_text("generate:library")
-    long_desc Help.text("generate:library")
+    #--------------------------------------------------------------------------
+    # library generator:
+    #--------------------------------------------------------------------------
+    desc "library NAME...", Help.text('generate')['library']['short']
+    long_desc Help.text('generate')['library']['long']
+    
     option :just_print, :type => :boolean, :aliases => '-n', :desc => "Don't actually run any commands; just print them."
 #    def library(names)
     def library(lib_name)

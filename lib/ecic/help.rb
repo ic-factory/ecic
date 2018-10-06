@@ -1,14 +1,14 @@
 module Ecic::Help
+  require 'YAML'
   class << self
     def text(namespaced_command)
-      path = namespaced_command.to_s.gsub(':','/')
-      path = File.expand_path("../help/#{path}.md", __FILE__)
-      IO.read(path) if File.exist?(path)
+      hlp = YAML.load(File.read(File.expand_path("../../../config/locales/help.en.yaml", __FILE__)))['help'][namespaced_command]
+#      hlp['short']
     end
-    def short_text(namespaced_command)
-      path = namespaced_command.to_s.gsub(':','/')
-      path = File.expand_path("../help/#{path}_short.md", __FILE__)
-      IO.read(path) if File.exist?(path)
+    def long(namespaced_command)
+      p namespaced_command
+      hlp = YAML.load(File.read(File.expand_path("../../../config/locales/help.en.yaml", __FILE__)))['help'][namespaced_command]
+#      hlp['long']
     end
   end
 end

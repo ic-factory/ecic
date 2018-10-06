@@ -8,6 +8,11 @@ module Ecic
         super
         shell.say "To get more help on a specific command, try 'ecic help [COMMAND]'"
       end
+
+      #TBA: Make a function that returns the root folder for the project
+      def root
+        File.expand_path("./tfj2")
+      end
     end
 
     check_unknown_options!
@@ -17,19 +22,11 @@ module Ecic
       true
     end
 
-    #TBA: Make a function that returns the root folder for the project
-    def self.root
-      File.expand_path("./tfj2")
-    end
-    
-#    class_option :verbose, type: :boolean
-#    class_option :noop, type: :boolean
-
     #--------------------------------------------------------------------------
     # NEW command:
     #--------------------------------------------------------------------------
-    long_desc Help.text(:new)
-    desc "new PATH", Help.short_text(:new)
+    desc "new PATH", Help.text('new')['short']
+    long_desc Help.text('new')['long']
     option :verbose, :type => :boolean
     def new(path)
       path = File.expand_path(path)
@@ -37,25 +34,37 @@ module Ecic
       generator = ProjectGenerator.new
       generator.destination_root = path
       generator.invoke_all
-      #TBA: invoke installation by eg. calling 'bundler install' from within the generate project folder    
+      #TBA: invoke installation by eg. calling 'bundler install' from within the generated project folder    
     end
 
-    desc "generate SUBCOMMAND ...ARGS", "sub subcommands"
-    long_desc Help.text(:generate)
+    #--------------------------------------------------------------------------
+    # GENERATE command:
+    #--------------------------------------------------------------------------
+    desc "generate SUBCOMMAND ...ARGS", Help.text('generate')['short']
+    long_desc Help.text('generate')['long']
     subcommand "generate", Generate
 
-    desc "completion *PARAMS", "Print words for auto-completion"
-    long_desc Help.text("completion")
+    #--------------------------------------------------------------------------
+    # COMPLETION command:
+    #--------------------------------------------------------------------------
+    desc "completion *PARAMS", Help.text('completion')['short'], hide: true
+    long_desc Help.text('completion')['long']
     def completion(*params)
       Completer.new(CLI, *params).run
     end
 
-    desc "completion_script", "Generate script that can be eval to setup auto-completion", hide: true
-    long_desc Help.text("completion_script")
+    #--------------------------------------------------------------------------
+    # COMPLETION_SCRIPT command:
+    #--------------------------------------------------------------------------
+    desc "completion_script", Help.text('completion')['script']['short'], hide: true
+    long_desc Help.text('completion')['script']['long']
     def completion_script
       Completer::Script.generate
     end
 
+    #--------------------------------------------------------------------------
+    # VERSION command:
+    #--------------------------------------------------------------------------
     desc 'version', 'Display version'
     map %w[-v --version] => :version
     def version

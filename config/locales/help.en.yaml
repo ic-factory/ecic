@@ -7,9 +7,41 @@ help:
       Example: ecic new my_project
 
       This creates a new project called 'my_project' in ./my_project
+  completion:
+    short: Print words for auto-completion
+    long:   |
+      Example:
+
+        ecic completion
+
+      Prints words for TAB auto-completion.
+
+      Examples:
+
+        ecic completion
+        ecic completion hello
+        ecic completion hello name
+
+      To enable TAB auto-completion, add the following to your profile:
+
+        eval $(ecic completion script)
+
+      Auto-completion example usage:
+
+        ecic [TAB]
+        ecic generate [TAB]
+        ecic generate design [TAB]
+        ecic generate design --[TAB]      
+      
+    script:
+      short: Generate script that can be eval to setup auto-completion      
+      long:   |
+        To use, add the following to your ~/.bashrc or ~/.profile
+
+          eval $(ecic completion script)      
+      
   generate:
     short: Generate new testbenches, RTL modules, tests etc.!
-  generators:
     testbench:
       short: Create a new testbench
       long: |
