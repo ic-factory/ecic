@@ -12,24 +12,20 @@ module Ecic
       copy_file 'gitignore', '.gitignore'
       copy_file 'config/project.rb', 'src/config/project.rb'
       copy_file 'config/libraries.rb', 'src/config/libraries.rb'
-      copy_file 'Gemfile', 'Gemfile'
+      copy_file 'config/ecic.rb', 'src/config/ecic.rb'
+      @ruby_version = '2.4.4'
+      template("Gemfile.tt","Gemfile")
     end
 
     def create_output_directories
-      #TBA: Replace these lines with a call to a TestbenchGenerator class
-      empty_directory 'src/testbench/chip'
-      empty_directory 'src/verification/chip'
-
-      copy_file 'src/packages/README.txt', 'src/packages/README.txt'
-      create_file 'src/design/chip/sources.rb'
+      empty_directory 'src/design'
+      create_file 'src/design/.gitkeep' if Dir.empty?("#{destination_root}/src/design")
+      empty_directory 'src/testbench'
+      create_file 'src/testbench/.gitkeep' if Dir.empty?("#{destination_root}/src/testbench")
+      empty_directory 'src/verification'
+      create_file 'src/verification/.gitkeep' if Dir.empty?("#{destination_root}/src/verification")
       empty_directory 'src/external_packages'
-    end
-
-    #Replace this function with a call to a 'VHDLComponentGenerator' class
-    def create_top_entity
-      create_file 'src/design/chip/sources.yaml.erb'
-      create_file 'src/design/chip/chip-rtl_arc.vhd'
-      create_file 'src/design/chip/chip-ent.vhd'
+      create_file 'src/external_packages/.gitkeep' if Dir.empty?("#{destination_root}/src/external_packages")
     end
 
     def git_init

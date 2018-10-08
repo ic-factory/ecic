@@ -1,12 +1,12 @@
 help:
   new:
-    short: Generate a new project called NAME
+    short: Generate a new project in PATH
     long:  |
-      Creates a new chip project called NAME.
+      Creates a new chip project in PATH.
    
       Example: ecic new my_project
 
-      This creates a new project called 'my_project' in ./my_project
+      This creates a new ECIC project in ./my_project
   completion:
     short: Print words for auto-completion
     long:   |
@@ -19,8 +19,8 @@ help:
       Examples:
 
         ecic completion
-        ecic completion hello
-        ecic completion hello name
+        ecic completion generate
+        ecic completion generate design
 
       To enable TAB auto-completion, add the following to your profile:
 

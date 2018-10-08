@@ -30,11 +30,18 @@ module Ecic
     option :verbose, :type => :boolean
     def new(path)
       path = File.expand_path(path)
-      puts "Generating a new project in #{path}"
+      shell.say "Generating a new project in #{path}"
       generator = ProjectGenerator.new
       generator.destination_root = path
       generator.invoke_all
+      
+      shell.say "\nTo install the required packages in your project, please run:\n   cd #{path}; bundle install\n", Thor::Shell::Color::BOLD
       #TBA: invoke installation by eg. calling 'bundler install' from within the generated project folder    
+#      Bundler.with_clean_env do
+#        Dir.chdir(path) do
+#          `bundle install`
+#        end
+#      end
     end
 
     #--------------------------------------------------------------------------
@@ -66,7 +73,6 @@ module Ecic
     # VERSION command:
     #--------------------------------------------------------------------------
     desc 'version', 'Display version'
-    map %w[-v --version] => :version
     def version
       say "#{VERSION}"
     end

@@ -1,0 +1,3 @@
+source 'https://rubygems.org'
+ruby '<%= @ruby_version %>'
+gem 'ecic'

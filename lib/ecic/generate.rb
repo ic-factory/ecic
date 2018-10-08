@@ -22,12 +22,22 @@ module Ecic
     option :just_print, :type => :boolean, :aliases => '-n', :desc => "Don't actually run any commands; just print them."
 #    def library(names)
     def library(lib_name)
-      generator = LibraryGenerator.new
-      generator.destination_root = Ecic::root
-#      names.each do |lib_name|
-        generator.library_name = lib_name
-        generator.invoke_all
-#      end
+      project_root_path = Ecic::Project::root
+#project_root_path = Dir.pwd
+#if false
+      if project_root_path.nil?
+        shell.error "You must be within an ECIC project before calling this command"
+        exit(1)
+      else
+        shell.say "Generating a new library in #{project_root_path}"
+        generator = LibraryGenerator.new
+        generator.destination_root = project_root_path
+  #      names.each do |lib_name|
+          generator.library_name = lib_name
+          generator.invoke_all
+  #      end
+      end
+
     end
   end
 end
