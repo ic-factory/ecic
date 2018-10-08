@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ecic (0.2.0)
+    ecic (0.2.1)
       activesupport
       colorize
       rake

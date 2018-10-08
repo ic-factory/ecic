@@ -4,7 +4,7 @@ module Ecic
 
     require 'pathname'
 
-    SCRIPT_ECIC = File.join('config', 'ecic.rb')
+    SCRIPT_ECIC = File.join('src',  'config', 'ecic.rb')
 
     #Function that returns the root directory of a ECIC project
     def self.root(path = Pathname.new(Dir.pwd))
