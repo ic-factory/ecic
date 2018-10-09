@@ -19,12 +19,12 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "thor"
-  spec.add_dependency "colorize"
-  spec.add_dependency "rake"
-  spec.add_dependency "activesupport"
+  spec.add_dependency "thor", '~> 0.20'
+  spec.add_dependency "colorize", '~> 0.8'
+  spec.add_dependency "rake", '~> 12.3'
+  spec.add_dependency "activesupport", '~> 5.2'
 
-  spec.add_development_dependency "bundler"
-  spec.add_development_dependency "byebug"
-  spec.add_development_dependency "rspec"
+  spec.add_development_dependency "bundler", '~> 1.16'
+  spec.add_development_dependency "byebug", '~> 10.0'
+  spec.add_development_dependency "rspec", '~> 3.8'
 end

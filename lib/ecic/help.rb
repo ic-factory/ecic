@@ -1,5 +1,5 @@
 module Ecic::Help
-  require 'YAML'
+  require 'yaml'
   class << self
     def text(namespaced_command)
       hlp = YAML.load(File.read(File.expand_path("../../../config/locales/help.en.yaml", __FILE__)))['help'][namespaced_command]
