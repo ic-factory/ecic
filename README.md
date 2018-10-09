@@ -32,6 +32,11 @@ The `ecic new` command creates a new ECIC project with a default directory struc
 
     $ ecic new my_project
 
+and the install the dependencies for your new project using Bundler:
+
+    $ cd ./my_project
+    $ bundle install
+
 If you already have an existing project and you want the project to use the ECIC framework, please follow the steps described in the 'Migrating an existing project to use ECIC' section below.
 
 ### Create new RTL library
@@ -141,7 +146,12 @@ That will generate the files as:
 
 If you already have an existing project and you want the project to use the ECIC framework, simply specify the path to that project folder (after making sure you have a backup, of course) eg.:
 
-    ecic new ~/my_existing_project
+    $ ecic new ~/my_existing_project
+
+and the install the dependencies for your project using Bundler:
+
+    $ cd ~/my_existing_project
+    $ bundle install
 
 If the folder contains files that will normally be overwritten by the framework, you will be asked whether to overwrite them. If you want to keep any conflicting files, then choose `n` (no, do not overwrite) for each conflicting file. You can then move or rename the original, conflicting files and run the `ecic new PATH` command again.
 
