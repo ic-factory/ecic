@@ -4,3 +4,7 @@ add design   chip, :env => ['asic_rtl', 'asic_gate', 'fpga_rtl']
 add design   [basic_vhdl, chip], :except => {:env => ['asic']}
 #add design chip_tb, :path => '/some/absolute/path'
 #add testbench chip_tb, :path => '/some/absolute/path'
+#Libraries can be added in libraries.rb with two different syntaxes, eg.:
+  library.create('lib_x')
+  and 
+  libraries << Library.new('lib_z')

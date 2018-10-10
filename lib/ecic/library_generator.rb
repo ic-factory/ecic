@@ -18,7 +18,7 @@ module Ecic
       libraries_file = File.expand_path("#{destination_root}/src/config/libraries.rb")
       empty_directory 'src/config' unless File.exist?(File.dirname(libraries_file))      
       create_file libraries_file unless File.exist?(libraries_file)                  
-      append_to_file 'src/config/libraries.rb', "add library #{@library_name}\n"
+      append_to_file 'src/config/libraries.rb', "\nlibrary.create('#{@library_name}')"
     end
 
   end
