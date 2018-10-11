@@ -23,6 +23,7 @@ module Ecic
   autoload :Generate, "ecic/generate"
   autoload :Completion, "ecic/completion"
   autoload :Completer, "ecic/completer"
+  autoload :DesignGenerator, "ecic/design_generator"
   autoload :ProjectGenerator, "ecic/project_generator"
   autoload :LibraryGenerator, "ecic/library_generator"
   autoload :Library, "ecic/library"

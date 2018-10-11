@@ -64,9 +64,9 @@ To see the full list of options for the `ecic generate library` command, run `ec
 
 ### Create new RTL file
 
-Creating a **new** RTL design can be done with the `ecic generate design` command. For VHDL designs, this command will generate both the component, entity and architecture and for SystemVerilog it will create a module. If you already have existing RTL design files you wish to add to the project, you should use the `ecic add design` command instead, see the 'Add existing RTL files' section.
+Creating a **new** RTL design can be done with the `ecic generate design` command. For VHDL designs, this command will generate both the component, entity and architecture and for SystemVerilog it will create a module. If you already have existing RTL design files you wish to add to the project, you should use the `ecic add design` command instead, see the `Add existing RTL files` section.
 
-The type of RTL design (VHDL or Verilog) to create is controlled by a `--type=vhdl|verilog` option and defaults to the value defined by the `config.generator.library.type.default` setting in the `./src/config/ecic.rb` configuratinon file.
+The type of RTL design (VHDL or Verilog) to create is controlled by a `--type=vhdl|sv` option and defaults to the value defined by the `config.generator.library.type.default` setting in the `./src/config/ecic.rb` configuratinon file.
 
 The `ecic generate design` command can be called from any directory within your project. To see the full list of options for the `ecic generate design` command, run `ecic generate help design`.
 
@@ -82,16 +82,18 @@ When creating a new VHDL design, you will be given the option to also create and
 
 The following VHDL files will be created (relative to the project root folder):
 
-    ./src/design/my_lib/my_design1-pkg-comp.vhd    # Component definition
+    ./src/design/my_lib/my_design1-pkg_types.vhd   # Types and constants definition package (optional)                                                     
+    ./src/design/my_lib/my_design1-pkg_comp.vhd    # Component definition
     ./src/design/my_lib/my_design1-ent.vhd         # Entity definition
-    ./src/design/my_lib/my_design1-arc-rtl.vhd     # RTL architecture
-    ./src/design/my_lib/my_design1-pkg-types.vhd   # Types and constants definition package (optional)                                                     
+    ./src/design/my_lib/my_design1-arc_rtl.vhd     # RTL architecture
 
 Placing each component, entity and architecture in separate files allows a projects to be recompiled very fast when only a few files have been modified, since eg. an update that is isolated to a single RTL architecture only requires that one file to be recompiled. Splitting the entity and architecture into separate files also allows you to have multiple architectures for the save entity and choose between the architecture files at compile time without having to use `VHDL configuration` constructs.
 
-Should you still wish to combine eg. the entity and architecture files into one file, you can configure `ECIC` to do this by default by setting `config.generator.design.vhdl.combine` option in `./src/config/ecic.rb`:
+Should you still wish to combine eg. the entity and architecture files into one file, you can configure `ECIC` to do this by default by setting the `config.generator.design.vhdl.combine` option in `./src/config/ecic.rb`, eg.:
 
     config.generator.design.vhdl.combine = 'entity + architecture'
+
+This would result in a file with a `-ent-arc_rtl.vhd` extention for the file containing both the entity and architecture.
 
 ##### Create multiple VHDL design for the same library
 
@@ -101,14 +103,14 @@ You can create multiple designs at the same time, and designs can be placed in s
 
 This will create the following VHDL files (relative to the project root folder):
 
-    ./src/design/my_lib/my_design2-comp.pkg.vhd                # Component definition
+    ./src/design/my_lib/my_design2-pkg_types.vhd               # Types and constants definition package (optional)                                                     
+    ./src/design/my_lib/my_design2-pkg_comp.vhd                # Component definition
     ./src/design/my_lib/my_design2-ent.vhd                     # Entity definition
-    ./src/design/my_lib/my_design2-rtl_arc.vhd                 # RTL architecture
-    ./src/design/my_lib/my_design2-pkg-types.vhd               # Types and constants definition package (optional)                                                     
-    ./src/design/my_lib/my_subblock/my_design3-comp-pkg.vhd    # Component definition
+    ./src/design/my_lib/my_design2-arc_rtl.vhd                 # RTL architecture
+    ./src/design/my_lib/my_subblock/my_design3-pkg_types.vhd   # Types and constants definition package (optional)                                                     
+    ./src/design/my_lib/my_subblock/my_design3-pkg_comp.vhd    # Component definition
     ./src/design/my_lib/my_subblock/my_design3-ent.vhd         # Entity definition
-    ./src/design/my_lib/my_subblock/my_design3-rtl_arc.vhd     # RTL architecture
-    ./src/design/my_lib/my_subblock/my_design3-pkg-types.vhd   # Types and constants definition package (optional)                                                     
+    ./src/design/my_lib/my_subblock/my_design3-arc_rtl.vhd     # RTL architecture
 
 In this example the `--types-package` option is used to automatically include the `*-pkg-types.vhd` files without prompting the user with the option.
  
@@ -131,7 +133,7 @@ All generated SystemVerilog files will be added to the `sources.rb` file in the 
 
 #### Omitting the --lib option
 
-If the `ecic generate design` command is called from within a library folder (or subfolder), the `--lib` option can be omitted, in which case the new designs will be created for that library. The files will be placed relative to the current working directory.
+If the `ecic generate design` command is called from within a library folder (or subfolder) and the `--lib` option is omitted, the new designs will be created for the library in that folder.
 
 Example:
 
@@ -140,7 +142,9 @@ Example:
 
 That will generate the files as:
 
-    ./src/design/queue_system/arbitor/statemachine-*.vhd      #Path is relative to the project root folder
+    ./src/design/queue_system/statemachine-*.vhd      #Path is relative to the project root folder
+
+Note that even though the current working directory in this example is `arbitor`, the generated files will be placed in the `queue_system` folder, since no hierarchy is included in the design name.
 
 ## Migrating an existing project to use ECIC
 

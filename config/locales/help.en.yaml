@@ -35,11 +35,11 @@ help:
       
     script:
       short: Generate script that can be eval to setup auto-completion      
-      long:   |
+      long: |
         To use, add the following to your ~/.bashrc or ~/.profile
 
           eval $(ecic completion script)      
-      
+
   generate:
     short: Generate new testbenches, RTL modules, tests etc.!
     testbench:
@@ -61,3 +61,17 @@ help:
 
             This creates the given libraries in the ./src/design/ directory of 
             your project and adds the libraries to ./src/config/libraries.rb
+            
+    design:
+      short: Create a new RTL design
+      long: |
+            Create a new VHDL/SystemVerilog design.
+            
+            Example: ecic generate design --type=vhdl --library=some_lib design1 sub_block/design2
+
+            This creates the component, entity and architecture files for two designs called 'design1' and 'design2'.
+            An optional types and constants definition file may also be created for each design.
+            The files for 'design1' will be placed under 'src/design/some_lib' whereas the files for 'design2'
+            will be placed in 'src/design/some_lib/sub_block'.
+            
+            The RTL files are automatically added to the project and the given library will be created and added as well if needed.

@@ -83,10 +83,12 @@ module Ecic
     desc 'libraries', 'Display list of libraries in your project'
     def libraries
       root_dir = Project::root
-      shell.error "You must be within an ECIC project before calling this command" if root_dir.nil?
-      library_cfg_file = Project::library_cfg_file(root_dir)
-      project = Project.new
-      project.load_libraries(library_cfg_file)
+      if root_dir.nil?
+        shell.error "You must be within an ECIC project before calling this command" 
+        exit(3)
+      end
+      project = Project.new(root_dir)
+      project.load_libraries
       say project.libraries { |lib| "#{lib.to_s}" }.join("\n")
     end
     

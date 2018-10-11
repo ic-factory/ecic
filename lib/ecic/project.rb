@@ -6,17 +6,14 @@ module Ecic
     
     require 'pathname'
     
-    def initialize
+    def initialize(root = Project::root)
       @libraries = []
+      @root = root
     end
 
     SCRIPT_ECIC = File.join('src',  'config', 'ecic.rb')
     LIBRARIES_CFG_SCRIPT = File.join('src',  'config', 'libraries.rb')
     
-    def self.library_cfg_file(root = Project::root)
-      File.join(root, LIBRARIES_CFG_SCRIPT)
-    end
-
     #Function that returns the root directory of a ECIC project
     def self.root(path = Pathname.new(Dir.pwd))
       if File.exists?(File.join(path, SCRIPT_ECIC))
@@ -26,10 +23,15 @@ module Ecic
       end
       return root(path.parent)
     end
+
+    def default_library_cfg_file
+      File.join(@root, LIBRARIES_CFG_SCRIPT)
+    end
+
     
-    def load_libraries(lib_file)
+    def load_libraries(lib_file = default_library_cfg_file)
       if File.exists?(lib_file)
-        puts "Reading #{lib_file}"
+#        puts "Reading #{lib_file}"
         eval File.read(lib_file)
       else
         raise "Could not read library definitions from #{lib_file}"

@@ -2,6 +2,8 @@ module Ecic
 
   class Library
 
+    attr_accessor :name
+
     def initialize(name=nil)
       @name = name
     end
