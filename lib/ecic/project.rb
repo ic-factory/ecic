@@ -31,12 +31,19 @@ module Ecic
     
     def load_libraries(lib_file = default_library_cfg_file)
       if File.exists?(lib_file)
-#        puts "Reading #{lib_file}"
-        eval File.read(lib_file)
-      else
-        raise "Could not read library definitions from #{lib_file}"
+        begin
+          eval File.read(lib_file)
+        rescue Exception => exc
+          raise "Syntax error occurred while reading #{lib_file}: #{exc.message}"
+        end  
+#      else
+#        raise "Could not read library definitions from #{lib_file}"
       end
 
+    end
+
+    def has_library?(lib_name)
+      libraries.any? {|l| l.name == lib_name }
     end
 
     def add_libray(name)

@@ -95,7 +95,7 @@ Should you still wish to combine eg. the entity and architecture files into one 
 
 This would result in a file with a `-ent-arc_rtl.vhd` extention for the file containing both the entity and architecture.
 
-##### Create multiple VHDL design for the same library
+##### Create multiple VHDL designs for the same library
 
 You can create multiple designs at the same time, and designs can be placed in subfolders within a library. For example, to create a new VHDL design called `my_design2` at the root of a library called `my_lib` and create another VHDL design called `my_design3` in a subfolder called `my_subblock`, run:
 
@@ -203,6 +203,6 @@ To install the ECIC framework onto your local machine, run `bundle exec rake ins
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/ic-factory/ecic.
+Bug reports and pull requests are most welcome on GitHub at https://github.com/ic-factory/ecic.
 
 
