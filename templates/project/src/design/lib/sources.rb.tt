@@ -1,0 +1,7 @@
+#This file lists all design files for the '<%= @library_name %>' library.
+#
+# Syntax:
+#
+#    source_file.create('DESIGN_FILE')
+#
+# where DESIGN_FILE is the name of a VHDL/Verilog/SystemVerilog file.

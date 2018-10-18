@@ -1,5 +1,7 @@
 module Ecic
   class CLI < Command
+
+    include Ecic::SourceFileAdder
       
     class << self
       def help(shell, subcommand = false)
@@ -48,8 +50,48 @@ module Ecic
     # GENERATE command:
     #--------------------------------------------------------------------------
     desc "generate SUBCOMMAND ...ARGS", Help.text('generate')['short']
-    long_desc Help.text('generate')['long']
     subcommand "generate", Generate
+
+    
+    #--------------------------------------------------------------------------
+    # design generator:
+    #--------------------------------------------------------------------------
+    desc "addfile LIBRARY_NAME FILENAME...", Help.text('addfile')['short']
+    long_desc Help.text('addfile')['long']
+
+    def addfile(lib_name, *file_names)
+      begin
+        root_dir = Project::root
+        if root_dir.nil?
+          shell.error "You must be within an ECIC project before calling this command"
+          exit(1)
+        end
+        project = Project.new(root_dir)
+        project.load_libraries
+
+        unless project.has_library?(lib_name)
+          if yes?("Library '#{lib_name}' does not exist. Create it? [y/n]:")
+            generator = LibraryGenerator.new
+            generator.destination_root = root_dir
+            generator.library_name = lib_name
+            generator.invoke_all
+          else
+            shell.error "Operation aborted!"
+            exit(2)
+          end
+        end
+        file_adder = FileAdder.new
+        file_adder.library_name = lib_name
+        file_adder.file_names = file_names
+        file_adder.invoke_all
+
+      rescue Exception => exc
+        shell.error exc.message
+        exit(3)
+      end
+      
+    end
+
 
     #--------------------------------------------------------------------------
     # COMPLETION command:
@@ -80,8 +122,18 @@ module Ecic
     #--------------------------------------------------------------------------
     # LIBRARIES command:
     #--------------------------------------------------------------------------
-    desc 'libraries', 'Display list of libraries in your project'
+    desc 'libraries', Help.text('libraries')['short']
+    long_desc Help.text('libraries')['long']
+    option :format, :type => :string, :banner => 'text|json', :desc => 'Specify the output format'
+    option :include_source_files, :type => :boolean, :aliases => '-s', :desc => "Include source files for each library"
     def libraries
+
+      defaults = {
+        "format"       => "text",
+        "include_source_files" => false
+      }
+      opt = defaults.merge(options)
+      
       root_dir = Project::root
       if root_dir.nil?
         shell.error "You must be within an ECIC project before calling this command" 
@@ -89,9 +141,14 @@ module Ecic
       end
       project = Project.new(root_dir)
       project.load_libraries
-      say project.libraries { |lib| "#{lib.to_s}" }.join("\n")
+      project.load_sources if opt['include_source_files']
+      if opt['format'] == 'json'
+        require 'json'
+        say project.libraries.map{ |lib| lib.to_json(:include_source_files => opt['include_source_files']) }.join(",") 
+      else
+        say project.libraries.map{ |lib| lib.to_str(:include_source_files => opt['include_source_files']) }.join("\n") 
+      end
     end
-    
   end
 end
 

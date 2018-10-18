@@ -1,10 +1,12 @@
+* Remove any '/' prefix and postfix from library names when generating a new library (to allow use of "find" command to generate a number of libraries)
+* 'addfile' command must check that each add file actually exists.
+
 #Syntax for sources.rb
 
 add design   chip, :env => ['asic_rtl', 'asic_gate', 'fpga_rtl']
 add design   [basic_vhdl, chip], :except => {:env => ['asic']}
 #add design chip_tb, :path => '/some/absolute/path'
 #add testbench chip_tb, :path => '/some/absolute/path'
-#Libraries can be added in libraries.rb with two different syntaxes, eg.:
+
+#Libraries can be added in libraries.rb with the syntax:
   library.create('lib_x')
-  and 
-  libraries << Library.new('lib_z')

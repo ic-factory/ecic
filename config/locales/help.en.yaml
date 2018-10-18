@@ -7,6 +7,16 @@ help:
       Example: ecic new my_project
 
       This creates a new ECIC project in ./my_project
+  libraries:
+    short: Display list of libraries in the project
+    long:  |
+      Displays a list of the libraries in the project, optionally
+      along with a list of source files for each library.
+   
+      Example: ecic libraries --include-source-files --format=json
+
+      Prints a JSON formatted list of all libraries, including the source files in each library.
+
   completion:
     short: Print words for auto-completion
     long:   |
@@ -40,8 +50,23 @@ help:
 
           eval $(ecic completion script)      
 
+  addfile:
+    short: Add existing design and testbench files to the project!
+    long: |
+      Add one or more existing design files to a given library in the project!
+
+      Example: ecic addfile my_lib ./foo/bar/some_design.sv ../toto/kuku.vhd
+  
+      This adds the ./foo/bar/some_design.sv ../toto/kuku.vhd files to the library 
+      called 'my_lib' by adding these to the <PROJECT_ROOT>/src/design/my_lib/sources.rb file.
+  
+      Although all files that belong to a given library should be placed in the
+      folder for that library, you can specify files that are placed anywhere
+      in your file system.
+
   generate:
     short: Generate new testbenches, RTL modules, tests etc.!
+
     testbench:
       short: Create a new testbench
       long: |

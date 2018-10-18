@@ -144,7 +144,7 @@ That will generate the files as:
 
     ./src/design/queue_system/statemachine-*.vhd      #Path is relative to the project root folder
 
-Note that even though the current working directory in this example is `arbitor`, the generated files will be placed in the `queue_system` folder, since no hierarchy is included in the design name.
+**Note:** Even though the current working directory in this example is `arbitor`, the generated files will be placed in the `queue_system` folder, since no hierarchy is included in the design name.
 
 ## Migrating an existing project to use ECIC
 

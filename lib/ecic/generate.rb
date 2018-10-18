@@ -47,7 +47,7 @@ module Ecic
     option :just_print, :type => :boolean, :aliases => '-n', :desc => "Don't actually run any commands; just print them."
     option :type, :type => :string, :banner => 'vhdl|sv', :required => true, :desc => 'Speficy the RTL type (VHDL or Verilog/SystemVerilog)'
     option :lib,  :type => :string, :banner => 'LIBRARY_NAME', :required => true, :desc => 'Speficy the RTL type (VHDL or Verilog/SystemVerilog)'
-    option :types_package, :type => :boolean, :aliases => '-l', :desc => "Include a package file for type and constant definitions."
+    option :types_package, :type => :boolean, :desc => "Include a package file for type and constant definitions."
 
     def design(*names)
       begin
@@ -76,12 +76,28 @@ module Ecic
 
         names.each { |design_name|
           incl_types_pkg = options[:types_package]
-          incl_types_pkg ||= yes?("Would you like to include a package for type and constant definitions for '#{design_name}'? [y/n]: ")
-          generator = DesignGenerator.new
+          if type == 'vhdl'
+            incl_types_pkg = yes?("Would you like to include a package for type and constant definitions for '#{design_name}'? [y/n]: ") if incl_types_pkg.nil?
+          else
+            incl_types_pkg ||= false
+            if incl_types_pkg
+              shell.error "--types_package option does not apply for Verilog/SystemVerilog generation!"  
+              exit(3)
+            end
+          end
+          #Tba 
+          if type == 'vhdl'
+            generator = DesignGenerator.new
+            generator.include_types_pkg = incl_types_pkg
+          elsif type == 'sv'
+            generator = SvDesignGenerator.new
+          else
+            shell.error "--type option must be set to either 'vhdl' or 'sv'"  
+            exit(3)
+          end
           generator.destination_root = root_dir
           generator.library_name = lib_name
           generator.design_name = design_name
-          generator.include_types_pkg = incl_types_pkg
           generator.invoke_all
         }
       rescue Exception => exc
