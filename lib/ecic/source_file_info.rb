@@ -11,23 +11,24 @@ module Ecic
     def initialize(project, file_name, library=nil)
       @project = project
       @absolute_path = Pathname.new(File.expand_path(file_name))      
-#      puts "test1"
       @relative_path_from_project = @absolute_path.relative_path_from(Pathname.new("#{@project.root}"))
-#      puts "test2"
-#tba: try this instead:      @library = library || create_library_from_file_path
-      @library = library || create_library_from_file_path
-#      @library = library.nil? ? create_library_from_file_path : library
+      @library = library || get_library_from_file_path
     end
 
     #TBA: Make sure this function works for libraries under src/testbench as
     #well and make sure it returns nil, if the library name cannot be determined.
     #TBA: Update this function to first look for any sources.rb files within the
     #project folder structure.
-    def create_library_from_file_path
+    def get_library_from_file_path
       return nil if is_outside_project?
       sources_file_dir = find_sources_file_dir 
       if sources_file_dir
-#        puts "        #A sources.rb file was found. Use the name of the folder as the library name:"
+        #A sources.rb file was found."
+        #Check if an existing library is already mapped to that folder. If so, return that library
+        #and otherwise return a new library that is named according to the  folder
+        already_mapped_lib = @project.library_mapped_to(sources_file_dir.to_s)
+        return already_mapped_lib if already_mapped_lib
+        #Use the name of the folder as the library name:"
         lib_dir = sources_file_dir
       else
 #        puts "        #Could not find an existing sources.rb file for the given source file"
@@ -35,7 +36,7 @@ module Ecic
       end
       unless lib_dir.nil?
         lib_name = lib_dir.basename.to_s
-        Ecic::Library.new(@project, get_library_type_from_file_path, :name => lib_name, :path => lib_dir)
+        Ecic::Library.new(@project, lib_name, get_library_type_from_file_path, :path => lib_dir)
       end
     end
 
@@ -93,26 +94,5 @@ module Ecic
 #      puts "#{@library.path}/sources.rb"
       Pathname.new("#{@library.path}/sources.rb")
     end
-#    sources_list_pathname = "#{project.root}/src/design/#{library_name}/sources.rb" unless library_name.nil?
-#    
-#    def sources_file_path
-#      @lib_name ||= library_name
-#      "#{project.root}/src/design/#{@lib_name}/sources.rb"
-#      
-#    end
-#      relative_file_path = file_path.relative_path_from(src_list_filepath.dirname).to_s
-#      sources_list_pathname = Pathname.new("#{project.root}/src/design/#{library_name}/sources.rb") unless library_name.nil?
-#      
-#    end
-#    
-##    attr_accessor :library_name, :file_names, :project
-#
-
-#    def extract_implicit_library_name(absolute_path)
-      
-
-    
-    
-    
   end
 end

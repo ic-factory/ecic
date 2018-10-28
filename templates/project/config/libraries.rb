@@ -2,12 +2,10 @@
 
 #Syntax:
 #
-#    design_library.create('LIBRARY')
+#    design_library('library_name')
 #
-# where LIBRARY is the name of a VHDL/Verilog library that must be placed in a folder of the same name under src/design
-
-#Syntax:
+# where library_name is the name of a VHDL/Verilog library, which is normally placed in a folder of the same name under src/design
 #
-#    testbench_library.create('TESTBENCH')
+#    testbench_library('testbench_name')
 #
-# where TESTBENCH is the name of a testbench that must be placed in a folder of the same name under src/testbench
+# where testbench_name is the name of a testbench library, which is normally placed in a folder of the same name under src/testbench

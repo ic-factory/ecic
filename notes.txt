@@ -1,3 +1,5 @@
+#Make sure to check if a library already is mapped to a given folder - before asking to create a new one (in case a library with different name than the folder name is already mapped to that folder) 
+
 #The 'all' option for creating a new library (when adding files) does not work
 
 #When sources files are listed, they must be displayed in alphabetical order.
@@ -32,6 +34,3 @@ add design   chip, :env => ['asic_rtl', 'asic_gate', 'fpga_rtl']
 add design   [basic_vhdl, chip], :except => {:env => ['asic']}
 #add design chip_tb, :path => '/some/absolute/path'
 #add testbench chip_tb, :path => '/some/absolute/path'
-
-#Libraries can be added in libraries.rb with the syntax:
-  library.create('lib_x')

@@ -37,11 +37,11 @@ module Ecic
       @include_types_pkg ||= false
       #TBA: update these cals to 'Pathname'
       if @include_types_pkg
-        append_to_file(src_file, "source_file.create('#{@design_name}-pkg_types.vhd')\n"
+        append_to_file(src_file, "source_file('#{@design_name}-pkg_types.vhd')\n"
       end
-      append_to_file(src_file, "source_file.create('#{@design_name}-pkg_comp.vhd')\n"
-      append_to_file(src_file, "source_file.create('#{@design_name}-ent.vhd')\n"
-      append_to_file(src_file, "source_file.create('#{@design_name}-arc_rtl.vhd')\n"
+      append_to_file(src_file, "source_file('#{@design_name}-pkg_comp.vhd')\n"
+      append_to_file(src_file, "source_file('#{@design_name}-ent.vhd')\n"
+      append_to_file(src_file, "source_file('#{@design_name}-arc_rtl.vhd')\n"
     end
 
   end

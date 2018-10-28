@@ -2,6 +2,6 @@
 #
 # Syntax:
 #
-#    source_file.create('DESIGN_FILE')
+#    source_file('design_file')
 #
-# where DESIGN_FILE is the name of a VHDL/Verilog/SystemVerilog file.
+# where design_file is the name of a VHDL/Verilog/SystemVerilog file.

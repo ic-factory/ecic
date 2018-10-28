@@ -21,14 +21,14 @@ module Ecic
       create_file libraries_file unless File.exist?(libraries_file)
       case @library.path.to_s
       when "src/design/#{@library.name}"
-        cmd = "design_library.create('#{@library.name}')"
+        cmd = "design_library('#{@library.name}')"
       when "src/testbench/#{@library.name}"
-        cmd = "testbench_library.create('#{@library.name}')"
+        cmd = "testbench_library('#{@library.name}')"
       else
         if @library.is_a_testbench?
-          cmd = "testbench_library.create('#{@library.name}', :path => '#{@library.path}')"
+          cmd = "testbench_library('#{@library.name}', :path => '#{@library.path}')"
         else
-          cmd = "design_library.create('#{@library.name}', :path => '#{@library.path}')"
+          cmd = "design_library('#{@library.name}', :path => '#{@library.path}')"
         end
       end
       append_to_file 'src/config/libraries.rb', "#{cmd}\n"

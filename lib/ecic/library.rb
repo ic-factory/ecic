@@ -7,29 +7,15 @@ module Ecic
     attr_reader   :type
 
     
-    def initialize(project, type, options={})
-      defaults = {:name => nil,
-                  :path => nil}
-      opt = defaults.merge(options)
+    def initialize(project, name, type, options={})
+      opt = {:path => nil}.merge(options)
       @project = project
       @type = type
-      @name = opt[:name]
-      default_path = {:testbench => "src/testbench/#{@name}",
-                      :design    => "src/design/#{@name}"}
-      @path = opt[:path] || default_path[@type]
-#      puts @path
-      @source_files = []
-    end
-
-    def create(name, options = {})
-      opt = {:path => @path}.merge(options)
       @name = name
-      #By default the @path remains unchanged - unless it is nil, in which case 
-      #it will be set to a default value according to the type:
       default_path = {:testbench => "src/testbench/#{@name}",
                       :design    => "src/design/#{@name}"}
       @path = opt[:path] || default_path[@type]
-      save
+      @source_files = []
     end
     
     def is_valid?
@@ -78,7 +64,7 @@ module Ecic
       src_file = File.join(@project.root, @path, 'sources.rb')
       if File.exists?(src_file)
         begin
-#          puts "reading #{src_file} ..."
+          puts "reading #{src_file} ..."
           eval File.read(src_file)
         rescue Exception => exc
           raise "Syntax error occurred while reading #{src_file}: #{exc.message}"
@@ -86,7 +72,7 @@ module Ecic
       else
 #        p @path
 #        p @type
-        raise "Could not read sources for #{name} library"
+        raise "Could not read sources for #{name} library. #{src_file} file does not exist"
       end
     end
 
@@ -94,10 +80,10 @@ module Ecic
       @type == :testbench
     end
     
-    #Function used by 'source.create' method used in src/confic/libraries.rb
-    def source_file
+    #Function used in sources.rb file of each library
+    def source_file(path)
 #      puts "Creating new source file"
-      new_src = SourceFile.new(self)
+      new_src = SourceFile.new(self, path)
       source_files << new_src
       new_src
     end

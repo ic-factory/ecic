@@ -35,7 +35,7 @@ module Ecic
           project.load_libraries
           names.each { |lib_name|
             #TBA: Add option to generate a testbench library as well
-            new_lib = project.design_library(:name => lib_name)
+            new_lib = project.design_library(lib_name)
             if new_lib.already_exists?
               say set_color("Library called '#{lib_name}' already exists",Thor::Shell::Color::GREEN)
             else
@@ -72,7 +72,7 @@ module Ecic
         project.load_libraries
   #      p project.libraries
 
-        lib = project.design_library(:name => options[:lib])
+        lib = project.design_library(options[:lib])
         unless lib.already_exists?
           unless ok_to_create_library? lib
             say "Operation aborted!"

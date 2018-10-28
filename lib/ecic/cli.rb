@@ -64,8 +64,7 @@ module Ecic
           exit(1)
         end
 
-        defaults = {"lib" => nil}
-        opt = defaults.merge(options)
+        opt = {"lib" => nil}.merge(options)
 
         project = Project.new(root_dir)
         project.load_libraries

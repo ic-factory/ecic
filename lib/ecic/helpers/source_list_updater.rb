@@ -16,6 +16,6 @@ module Ecic::SourceListUpdater
 #    puts "relative_src_list_filepath = relative_src_list_filepath"
 #    src_file = "src/design/#{library_name}/sources.rb.tfj"
     create_file src_list_filepath unless File.exists?(File.join(dest_root,src_list_filepath))
-    append_to_file src_list_filepath, "source_file.create('#{used_file_ref}')\n"
+    append_to_file src_list_filepath, "source_file('#{used_file_ref}')\n"
   end
 end

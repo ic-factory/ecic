@@ -41,8 +41,13 @@ module Ecic
     end
 
     def has_library?(library)
-#      libraries.any? {|l| l.name.eql? library.name  && l.type.to_s.eql? library.type.to_s}
       libraries.any? {|l| l.name.eql? library.name}
+    end
+
+    def library_mapped_to(path)
+      matching_libraries = libraries.select {|l| l.path.eql? path }
+      raise "Found multiple libraries mapped to '#{path}'" if matching_libraries.length > 1
+      matching_libraries.first
     end
       
     def get_library(lib_name)
@@ -53,18 +58,23 @@ module Ecic
 
     def add_library(lib)
       raise "A library called '#{lib.name}' already exists" if has_library?(lib)
+      raise "A library is already mapped to '#{lib.path}'" if library_mapped_to(lib.path)
       @libraries << lib
       return true
     end
 
-    #Function used by 'design_library.create' method used in src/confic/libraries.rb
-    def design_library(options={})
-      Library.new(self, :design, options)
+    #Function used in src/confic/libraries.rb
+    def design_library(name, options={})
+      lib = Library.new(self, name, :design, options)
+      lib.save
+      lib
     end
 
-    #Function used by 'testbench_library.create' method used in src/confic/libraries.rb
-    def testbench_library(options={})
-      Library.new(self, :testbench, options)
+    #Function used in src/confic/libraries.rb
+    def testbench_library(name, options={})
+      lib = Library.new(self, name, :testbench, options)
+      lib.save
+      lib
     end
 
     def load_sources

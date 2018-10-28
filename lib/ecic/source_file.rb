@@ -4,12 +4,9 @@ module Ecic
 
     attr_accessor :path #, :library
 
-    def initialize(library)
+    def initialize(library, path)
       @library = library
-    end
-
-    def create(path)
-      @path = path      
+      @path = path
     end
 
     def to_s
