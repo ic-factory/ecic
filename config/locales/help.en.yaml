@@ -55,14 +55,16 @@ help:
     long: |
       Add one or more existing design files to a given library in the project!
 
-      Example: ecic addfile my_lib ./foo/bar/some_design.sv ../toto/kuku.vhd
+      Example: ecic addfile --lib=my_lib ./foo/bar/some_design.sv ../toto/kuku.vhd
   
       This adds the ./foo/bar/some_design.sv ../toto/kuku.vhd files to the library 
-      called 'my_lib' by adding these to the <PROJECT_ROOT>/src/design/my_lib/sources.rb file.
+      called 'my_lib' by adding these to the sources.rb file of the libray.
   
       Although all files that belong to a given library should be placed in the
       folder for that library, you can specify files that are placed anywhere
       in your file system.
+      
+      If an added file is located outside the project folder, an absolute path will be used by default.
 
   generate:
     short: Generate new testbenches, RTL modules, tests etc.!

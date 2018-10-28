@@ -161,21 +161,32 @@ If the folder contains files that will normally be overwritten by the framework,
 
 ### Add existing RTL files
 
-To add an existing RTL file to the project, go to the project folder and use the `ecic add design` commmand. This will add all the listed files to the given design library. If the library does not already exist, you will be asked to confirm the creation of it.
+To add an existing RTL file to the project, go to the project folder and use the `ecic addfile` commmand. This will add all the listed files to your project.
 
-For example, to add two existing files named `./foo/bar/some_design.sv` and `../toto/kuku.vhd` to a library called `my_lib`, run:
+You can specify the library name with the `--lib` option or rely on an implicit library name that is extracted from the full paths of the added files. In the latter case the extracted library name will be equal to the name of the directory just under `src/design` or `src/testbench`. In either case, if the library does not already exist, you will be asked to confirm the creation of it.
 
-    $ ecic add design my_lib ./foo/bar/some_design.sv ../toto/kuku.vhd
+For example, given that:
 
-Although all files that belong to a given library should be placed in the folder for that library, you can specify files that are placed anywhere in your file system.
+  * you have a Unix like terminal
+  * you want to eg. add all design files that have a `.vhd` or `.sv` extention
+  * all design files are placed in subfolders under a `./src/design`
+  * all files for a given RTL library are placed under a folder (of the same name) in the `./src/design`
 
-If you have a Unix like terminal and want to eg. add all files in a `./foo` folder that has the extension `.vhd`, you can use the standard Unix `find` command:
+... then you can use the standard Unix `find` command and leave out the `--lib` option:
 
-    $ ecic add design my_lib `find ./foo -name "*.vhd"`
+    $ ecic addfile `find ./src/design -name "*.vhd"` `find ./src/design -name "*.sv"`
 
-When adding files to the project, the file extension (eg. vhd) is used to determine the file type. VHDL files are expected to have a .vhd or .vhdl extension and Verilog/SystemVerilog files are expected to have a .sv og .v extension. You can also specify the file type with a `type=vhdl|sv` option, eg.:
+Although all files that belong to a given library should be placed in the folder for that library, you can specify files that are placed anywhere in your file system, but this requires using the `--lib` option. For example, to add two existing files named `./foo/bar/some_design.sv` and `../../some/path/outside/the/library/folder/kuku.vhd` to a library called `my_lib`, run:
 
-    $ ecic add design --type=vhdl my_lib `find ./foo -name "*.*"`
+    $ ecic addfile --lib=my_lib ./foo/bar/some_design.sv ../../some/path/outside/the/library/folder/kuku.vhd
+
+If all your VHDL designs assume to be compiled into one library called `work`, you can just set `--lib=work`, eg.:
+
+    $ ecic addfile --lib=work `find . -name "*.vhd"`
+
+When adding files to the project, the file extension (eg. .vhd) is used to determine the file type. VHDL files are expected to have a .vhd or .vhdl extension and Verilog/SystemVerilog files are expected to have a .sv og .v extension. You can also specify the file type with a `type=vhdl|sv` option, eg.:
+
+    $ ecic addfile --type=vhdl --lib=my_lib `find ./foo -name "*.*"`
 
 ## Compiling and elaborating RTL files
 

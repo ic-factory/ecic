@@ -1,7 +1,7 @@
 module Ecic
   class CLI < Command
 
-    include Ecic::SourceFileAdder
+    include Ecic::SourceListUpdater
       
     class << self
       def help(shell, subcommand = false)
@@ -11,10 +11,6 @@ module Ecic
         shell.say "To get more help on a specific command, try 'ecic help [COMMAND]'"
       end
 
-      #TBA: Make a function that returns the root folder for the project
-      def root
-        File.expand_path("./tfj2")
-      end
     end
 
     check_unknown_options!
@@ -56,37 +52,33 @@ module Ecic
     #--------------------------------------------------------------------------
     # design generator:
     #--------------------------------------------------------------------------
-    desc "addfile LIBRARY_NAME FILENAME...", Help.text('addfile')['short']
+    desc "addfile FILENAME...", Help.text('addfile')['short']
     long_desc Help.text('addfile')['long']
+    option :lib, :type => :string, :banner => 'LIBRARY_NAME', :desc => 'Specify the name of the design library'
 
-    def addfile(lib_name, *file_names)
+    def addfile(*file_names)
       begin
         root_dir = Project::root
         if root_dir.nil?
-          shell.error "You must be within an ECIC project before calling this command"
+          shell.error set_color("You must be within an ECIC project before calling this command",Thor::Shell::Color::RED)
           exit(1)
         end
+
+        defaults = {"lib" => nil}
+        opt = defaults.merge(options)
+
         project = Project.new(root_dir)
         project.load_libraries
-
-        unless project.has_library?(lib_name)
-          if yes?("Library '#{lib_name}' does not exist. Create it? [y/n]:")
-            generator = LibraryGenerator.new
-            generator.destination_root = root_dir
-            generator.library_name = lib_name
-            generator.invoke_all
-          else
-            shell.error "Operation aborted!"
-            exit(2)
-          end
-        end
+        lib_name = opt['lib']
         file_adder = FileAdder.new
+        file_adder.destination_root = root_dir
         file_adder.library_name = lib_name
-        file_adder.file_names = file_names
+        file_adder.project      = project
+        file_adder.file_names   = file_names
         file_adder.invoke_all
 
       rescue Exception => exc
-        shell.error exc.message
+        shell.error set_color(exc.message, Thor::Shell::Color::RED)
         exit(3)
       end
       
@@ -127,7 +119,6 @@ module Ecic
     option :format, :type => :string, :banner => 'text|json', :desc => 'Specify the output format'
     option :include_source_files, :type => :boolean, :aliases => '-s', :desc => "Include source files for each library"
     def libraries
-
       defaults = {
         "format"       => "text",
         "include_source_files" => false
@@ -136,22 +127,21 @@ module Ecic
       
       root_dir = Project::root
       if root_dir.nil?
-        shell.error "You must be within an ECIC project before calling this command" 
+        shell.error set_color("You must be within an ECIC project before calling this command",Thor::Shell::Color::RED)
         exit(3)
       end
       project = Project.new(root_dir)
       project.load_libraries
-      project.load_sources if opt['include_source_files']
+      if opt['include_source_files']
+#        puts "reading source files..."
+        project.load_sources 
+      end
       if opt['format'] == 'json'
         require 'json'
         say project.libraries.map{ |lib| lib.to_json(:include_source_files => opt['include_source_files']) }.join(",") 
       else
-        say project.libraries.map{ |lib| lib.to_str(:include_source_files => opt['include_source_files']) }.join("\n") 
+        say project.libraries.map{ |lib| lib.to_s(:include_source_files => opt['include_source_files']) }.join("\n") 
       end
     end
   end
 end
-
-
-
-

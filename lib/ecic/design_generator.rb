@@ -3,9 +3,9 @@ module Ecic
   class DesignGenerator < Thor::Group
 #    require source_file_adder
     include Thor::Actions
-    include Ecic::SourceFileAdder
+    include Ecic::SourceListUpdater
 
-    attr_writer :library_name, :design_name, :include_types_pkg
+    attr_writer :library, :design_name, :include_types_pkg
     
     def self.source_root
       File.dirname(__FILE__) + '/../../templates/project'
@@ -21,7 +21,7 @@ module Ecic
 #    end
 
     def copy_rtl_templates
-      base_name = "src/design/#{@library_name}/#{@design_name}"
+      base_name = "#{@library.path}/#{@design_name}"
       @include_types_pkg ||= false
       if @include_types_pkg
         template("src/design/lib/pkg_types.vhd.tt", "#{base_name}-pkg_types.vhd")
@@ -32,15 +32,16 @@ module Ecic
     end
 
     def update_src_list
-      src_file = "src/design/#{@library_name}/sources.rb"
+      src_file = "#{@library.path}/sources.rb"
       create_file src_file unless File.exists?(src_file)
       @include_types_pkg ||= false
+      #TBA: update these cals to 'Pathname'
       if @include_types_pkg
-        add_src_file("#{@design_name}-pkg_types.vhd")
+        append_to_file(src_file, "source_file.create('#{@design_name}-pkg_types.vhd')\n"
       end
-      add_src_file("#{@design_name}-pkg_comp.vhd")
-      add_src_file("#{@design_name}-ent.vhd")
-      add_src_file("#{@design_name}-arc_rtl.vhd")
+      append_to_file(src_file, "source_file.create('#{@design_name}-pkg_comp.vhd')\n"
+      append_to_file(src_file, "source_file.create('#{@design_name}-ent.vhd')\n"
+      append_to_file(src_file, "source_file.create('#{@design_name}-arc_rtl.vhd')\n"
     end
 
   end

@@ -1,3 +1,28 @@
+#The 'all' option for creating a new library (when adding files) does not work
+
+#When sources files are listed, they must be displayed in alphabetical order.
+
+#Use "raise SystemExit" instead of the various "exit" calls
+
+* Make sure the design_generator still works, now that the 'add_src_file' method has been changed.
+
+* make sure "/Users/torbenj/projects/github/ecic/exe/ecic generate library dsp_core" command works
+
+* When generating a library, the libraries.rb file must include a path as a 2nd optional option, if the design library is not placed in src/design or if a testbench library is not placed in src/testbench.
+
+* Update the 'add_src_file' method so this method ensures that file paths are always relative to the sources.rb file.
+
+* Consider adding support for having libraries within subfolders, ie. a 
+    "--lib=blk1/subblock" should expect a sources.rb file in eg "src/design/blk1/subblock" and the library name should be
+    converted eg. "blk1-subblock" when compiling and when using it in a VHDL design.
+    
+
+* bug: 'addfile' command assumes that files are placed inder src/design - and never under src/testbench!! (given the fact that the --lib option is used, how can be specify a library under src/testbench ?? One option could be to require that the addfile command is called from within a library/testbench folder if adding a file not placed in either src/Design or src/testbench - and then remove the --lib option completely?) .
+
+Same issue with 'add_src_file' which also assumes src/design folder
+
+*    ls -d */  -> returns list of directorys (but include a trailing / character)
+
 * Remove any '/' prefix and postfix from library names when generating a new library (to allow use of "find" command to generate a number of libraries)
 * 'addfile' command must check that each add file actually exists.
 

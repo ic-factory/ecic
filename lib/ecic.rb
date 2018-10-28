@@ -28,8 +28,10 @@ module Ecic
   autoload :SvDesignGenerator, "ecic/sv_design_generator"
   autoload :ProjectGenerator, "ecic/project_generator"
   autoload :LibraryGenerator, "ecic/library_generator"
-  autoload :SourceFileAdder, "ecic/helpers/source_file_adder"
+  autoload :SourceListUpdater, "ecic/helpers/source_list_updater"
+  autoload :LibraryCreationHelper, "ecic/helpers/library_creation_helper"
   autoload :SourceFile, "ecic/source_file"
   autoload :Library, "ecic/library"
   autoload :Project, "ecic/project"
+  autoload :SourceFileInfo, "ecic/source_file_info"
 end

@@ -1,5 +1,6 @@
 module Ecic
   class Generate < Command    
+    include Ecic::LibraryCreationHelper
     
     #--------------------------------------------------------------------------
     # TESTBENCH generator:
@@ -21,20 +22,30 @@ module Ecic
     
     option :just_print, :type => :boolean, :aliases => '-n', :desc => "Don't actually run any commands; just print them."
     def library(*names)
-      project_root_path = Ecic::Project::root
-#project_root_path = Dir.pwd
-#if false
-      if project_root_path.nil?
-        shell.error "You must be within an ECIC project before calling this command"
-        exit(1)
-      else
-#        shell.say "Generating library in #{project_root_path}"
-        names.each { |lib_name|
-          generator = LibraryGenerator.new
-          generator.destination_root = project_root_path
-          generator.library_name = lib_name
-          generator.invoke_all
-        }
+      begin
+        project_root_path = Ecic::Project::root
+  #project_root_path = Dir.pwd
+  #if false
+        if project_root_path.nil?
+          shell.error set_color("You must be within an ECIC project before calling this command",Thor::Shell::Color::RED)
+          exit(1)
+        else
+  #        shell.say "Generating library in #{project_root_path}"
+          project = Project.new(project_root_path)
+          project.load_libraries
+          names.each { |lib_name|
+            #TBA: Add option to generate a testbench library as well
+            new_lib = project.design_library(:name => lib_name)
+            if new_lib.already_exists?
+              say set_color("Library called '#{lib_name}' already exists",Thor::Shell::Color::GREEN)
+            else
+              shell.error set_color("Library called '#{lib_name}' could not be generated",Thor::Shell::Color::RED) unless generate_library new_lib
+            end
+          }
+        end
+      rescue Exception => exc
+        shell.error set_color(exc.message,Thor::Shell::Color::RED)
+        exit(3)
       end
     end
     
@@ -51,26 +62,21 @@ module Ecic
 
     def design(*names)
       begin
-        lib_name = options[:lib]
         type = options[:type]
         root_dir = Project::root
         if root_dir.nil?
-          shell.error "You must be within an ECIC project before calling this command"
+          shell.error set_color("You must be within an ECIC project before calling this command",Thor::Shell::Color::RED)
           exit(1)
         end
         project = Project.new(root_dir)
         project.load_libraries
   #      p project.libraries
 
-        unless project.has_library?(lib_name)
-          if yes?("Library '#{lib_name}' does not exist. Create it? [y/n]:")
-            generator = LibraryGenerator.new
-            generator.destination_root = root_dir
-            generator.library_name = lib_name
-            generator.invoke_all
-          else
-            shell.error "Operation aborted!"
-            exit(2)
+        lib = project.design_library(:name => options[:lib])
+        unless lib.already_exists?
+          unless ok_to_create_library? lib
+            say "Operation aborted!"
+            raise SystemExit
           end
         end
 
@@ -81,7 +87,7 @@ module Ecic
           else
             incl_types_pkg ||= false
             if incl_types_pkg
-              shell.error "--types_package option does not apply for Verilog/SystemVerilog generation!"  
+              shell.error set_color("--types_package option does not apply for Verilog/SystemVerilog generation!",Thor::Shell::Color::RED)
               exit(3)
             end
           end
@@ -92,16 +98,16 @@ module Ecic
           elsif type == 'sv'
             generator = SvDesignGenerator.new
           else
-            shell.error "--type option must be set to either 'vhdl' or 'sv'"  
+            shell.error set_color("--type option must be set to either 'vhdl' or 'sv'",Thor::Shell::Color::RED)
             exit(3)
           end
           generator.destination_root = root_dir
-          generator.library_name = lib_name
+          generator.library = lib
           generator.design_name = design_name
           generator.invoke_all
         }
       rescue Exception => exc
-        shell.error exc.message
+        shell.error set_color(exc.message,Thor::Shell::Color::RED)
         exit(3)
       end
       
