@@ -31,7 +31,7 @@ module Ecic
           cmd = "design_library('#{@library.name}', :path => '#{@library.path}')"
         end
       end
-      append_to_file 'src/config/libraries.rb', "#{cmd}\n"
+      append_to_file 'src/config/libraries.rb', "#{cmd}.create\n"
     end
 
   end

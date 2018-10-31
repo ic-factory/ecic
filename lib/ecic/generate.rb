@@ -83,7 +83,7 @@ module Ecic
         names.each { |design_name|
           incl_types_pkg = options[:types_package]
           if type == 'vhdl'
-            incl_types_pkg = yes?("Would you like to include a package for type and constant definitions for '#{design_name}'? [y/n]: ") if incl_types_pkg.nil?
+            incl_types_pkg = yes?("Would you like to include a package for type and constant definitions for '#{design_name}'? [y/N]: ") if incl_types_pkg.nil?
           else
             incl_types_pkg ||= false
             if incl_types_pkg
@@ -91,7 +91,6 @@ module Ecic
               exit(3)
             end
           end
-          #Tba 
           if type == 'vhdl'
             generator = DesignGenerator.new
             generator.include_types_pkg = incl_types_pkg

@@ -65,16 +65,12 @@ module Ecic
 
     #Function used in src/confic/libraries.rb
     def design_library(name, options={})
-      lib = Library.new(self, name, :design, options)
-      lib.save
-      lib
+      Library.new(self, name, :design, options)
     end
 
     #Function used in src/confic/libraries.rb
     def testbench_library(name, options={})
-      lib = Library.new(self, name, :testbench, options)
-      lib.save
-      lib
+      Library.new(self, name, :testbench, options)
     end
 
     def load_sources

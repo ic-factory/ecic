@@ -22,7 +22,6 @@ module Ecic
 
     def copy_rtl_templates
       base_name = "#{@library.path}/#{@design_name}"
-      @include_types_pkg ||= false
       if @include_types_pkg
         template("src/design/lib/pkg_types.vhd.tt", "#{base_name}-pkg_types.vhd")
       end
@@ -32,16 +31,14 @@ module Ecic
     end
 
     def update_src_list
-      src_file = "#{@library.path}/sources.rb"
+      src_file = File.join(destination_root,"#{@library.path}/sources.rb")  
       create_file src_file unless File.exists?(src_file)
-      @include_types_pkg ||= false
-      #TBA: update these cals to 'Pathname'
       if @include_types_pkg
-        append_to_file(src_file, "source_file('#{@design_name}-pkg_types.vhd')\n"
+        append_to_file(src_file, "source_file('#{@design_name}-pkg_types.vhd')\n")
       end
-      append_to_file(src_file, "source_file('#{@design_name}-pkg_comp.vhd')\n"
-      append_to_file(src_file, "source_file('#{@design_name}-ent.vhd')\n"
-      append_to_file(src_file, "source_file('#{@design_name}-arc_rtl.vhd')\n"
+      append_to_file(src_file, "source_file('#{@design_name}-pkg_comp.vhd')\n")
+      append_to_file(src_file, "source_file('#{@design_name}-ent.vhd')\n")
+      append_to_file(src_file, "source_file('#{@design_name}-arc_rtl.vhd')\n")
     end
 
   end

@@ -30,7 +30,7 @@ module Ecic
       end
     end
     
-    def save
+    def create
       validate_name
       @project.add_library self      
     end

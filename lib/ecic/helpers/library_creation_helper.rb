@@ -22,7 +22,7 @@ module Ecic::LibraryCreationHelper
       generator.destination_root = library.project.root
       generator.library = library
       generator.invoke_all
-      library.save
+      library.create
     else
       return false
     end
@@ -32,7 +32,7 @@ module Ecic::LibraryCreationHelper
   
   def must_create_new_library?(library)
     return true if @always_create_library
-    options = "[Ynaq]"
+    options = "[Ynaqh]"
     loop do
       answer = ask(
         %[#{library.type.to_s.capitalize} library '#{library.name}' does not exist. Create it? (enter "h" for help) #{options}],
@@ -58,11 +58,11 @@ module Ecic::LibraryCreationHelper
   end
   
   def library_creation_help
-    puts "Options:"
-    puts "  Yes     : Create the library (default)"
-    puts "  No      : Continue without creating the library"
-    puts "  All     : Create the library (and any additional libraries)"
-    puts "  Quit    : Abort operation"
+    puts "        Y - yes, create the library (default)"
+    puts "        n - no, continue without creating the library"
+    puts "        a - all, create this library (and any other)"
+    puts "        q - quit, abort"
+    puts "        h - help, show this help"
   end
   
   def is?(value) #:nodoc:

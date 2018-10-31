@@ -16,7 +16,7 @@ module Ecic
     end
 
     def update_src_list
-      src_file = "#{@library.path}/sources.rb"
+      src_file = File.join(destination_root,"#{@library.path}/sources.rb")  
       create_file src_file unless File.exists?(src_file)
       append_to_file src_file, "source_file('#{@design_name}.sv')\n"
     end
