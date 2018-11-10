@@ -51,9 +51,9 @@ help:
           eval $(ecic completion script)      
 
   addfile:
-    short: Add existing design and testbench files to the project!
+    short: Add existing design and testbench files to the project
     long: |
-      Add one or more existing design files to a given library in the project!
+      Add one or more existing design files to a given library in the project
 
       Example: ecic addfile --lib=my_lib ./foo/bar/some_design.sv ../toto/kuku.vhd
   
@@ -66,8 +66,12 @@ help:
       
       If an added file is located outside the project folder, an absolute path will be used by default.
 
+  project:
+    short: Print various information about your project
+    root:
+      short: Print path to the root directory of your project
   generate:
-    short: Generate new testbenches, RTL modules, tests etc.!
+    short: Generate new testbenches, RTL modules, tests etc.
 
     testbench:
       short: Create a new testbench

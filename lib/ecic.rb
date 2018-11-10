@@ -24,6 +24,7 @@ module Ecic
   autoload :FileAdder, "ecic/file_adder"
   autoload :Completion, "ecic/completion"
   autoload :Completer, "ecic/completer"
+  autoload :ProjectCmd, "ecic/project_cmd"
   autoload :DesignGenerator, "ecic/design_generator"
   autoload :SvDesignGenerator, "ecic/sv_design_generator"
   autoload :ProjectGenerator, "ecic/project_generator"

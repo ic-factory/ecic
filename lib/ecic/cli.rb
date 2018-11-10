@@ -48,7 +48,12 @@ module Ecic
     desc "generate SUBCOMMAND ...ARGS", Help.text('generate')['short']
     subcommand "generate", Generate
 
-    
+    #--------------------------------------------------------------------------
+    # PROJECT command:
+    #--------------------------------------------------------------------------
+    desc "project SUBCOMMAND ...ARGS", Help.text('project')['short']
+    subcommand "project", ProjectCmd
+
     #--------------------------------------------------------------------------
     # design generator:
     #--------------------------------------------------------------------------
@@ -80,9 +85,7 @@ module Ecic
         shell.error set_color(exc.message, Thor::Shell::Color::RED)
         exit(3)
       end
-      
     end
-
 
     #--------------------------------------------------------------------------
     # COMPLETION command:
@@ -109,7 +112,7 @@ module Ecic
     def version
       say "#{VERSION}"
     end
-    
+
     #--------------------------------------------------------------------------
     # LIBRARIES command:
     #--------------------------------------------------------------------------
