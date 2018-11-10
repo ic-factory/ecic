@@ -32,7 +32,7 @@ The `ecic new` command creates a new ECIC project with a default directory struc
 
     $ ecic new my_project
 
-and the install the dependencies for your new project using Bundler:
+and then install the dependencies for your new project using Bundler:
 
     $ cd ./my_project
     $ bundle install
@@ -215,5 +215,3 @@ To install the ECIC framework onto your local machine, run `bundle exec rake ins
 5. Create new Pull Request
 
 Bug reports and pull requests are most welcome on GitHub at https://github.com/ic-factory/ecic.
-
-

@@ -133,7 +133,6 @@ module Ecic
         project = Project.new(root_dir)
         project.load_libraries
         if opt['include_source_files']
-  #        puts "reading source files..."
           project.load_sources
         end
         if opt['format'] == 'json'

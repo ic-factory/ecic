@@ -85,7 +85,7 @@ module Ecic
       when "src/design"
         return :design
       else
-        return nil
+        return :design
       end
     end
 
