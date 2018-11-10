@@ -42,11 +42,11 @@ module Ecic::LibraryCreationHelper
       when nil
         say ""
         return true
-      when is?(:yes), is?(:all), ""
+      when is?(:yes), ""
         return true
       when is?(:no), is?(:skip)
         return false
-      when is?(:always)
+      when is?(:all)
         return @always_create_library = true
       when is?(:quit)
         say "Aborting..."
