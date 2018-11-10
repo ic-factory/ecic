@@ -118,29 +118,37 @@ module Ecic
     option :format, :type => :string, :banner => 'text|json', :desc => 'Specify the output format'
     option :include_source_files, :type => :boolean, :aliases => '-s', :desc => "Include source files for each library"
     def libraries
-      defaults = {
-        "format"       => "text",
-        "include_source_files" => false
-      }
-      opt = defaults.merge(options)
-      
-      root_dir = Project::root
-      if root_dir.nil?
-        shell.error set_color("You must be within an ECIC project before calling this command",Thor::Shell::Color::RED)
+      begin
+        defaults = {
+          "format"       => "text",
+          "include_source_files" => false
+        }
+        opt = defaults.merge(options)
+
+        root_dir = Project::root
+        if root_dir.nil?
+          shell.error set_color("You must be within an ECIC project before calling this command",Thor::Shell::Color::RED)
+          exit(3)
+        end
+        project = Project.new(root_dir)
+        project.load_libraries
+        if opt['include_source_files']
+  #        puts "reading source files..."
+          project.load_sources
+        end
+        if opt['format'] == 'json'
+          require 'json'
+          say project.libraries.map{ |lib| lib.to_json(:include_source_files => opt['include_source_files']) }.join(",")
+        else
+          say project.libraries.map{ |lib| lib.to_s(:include_source_files => opt['include_source_files']) }.join("\n")
+        end
+
+      rescue Exception => exc
+        shell.error set_color(exc.message, Thor::Shell::Color::RED)
         exit(3)
       end
-      project = Project.new(root_dir)
-      project.load_libraries
-      if opt['include_source_files']
-#        puts "reading source files..."
-        project.load_sources 
-      end
-      if opt['format'] == 'json'
-        require 'json'
-        say project.libraries.map{ |lib| lib.to_json(:include_source_files => opt['include_source_files']) }.join(",") 
-      else
-        say project.libraries.map{ |lib| lib.to_s(:include_source_files => opt['include_source_files']) }.join("\n") 
-      end
+
+
     end
   end
 end
