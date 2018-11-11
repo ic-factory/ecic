@@ -8,9 +8,10 @@ module Ecic
         shell.say "Usage: ecic COMMAND [ARGS]"
         shell.say ""
         super
-        shell.say "To get more help on a specific command, try 'ecic help [COMMAND]'"
+        shell.say "Commands may be abbreviated, so long as they are unambiguous."
+        shell.say "E.g. 'ecic p r' is short for 'ecic project root'."
+        shell.say "\nTo get more help on a specific command, try 'ecic help [COMMAND]'"
       end
-
     end
 
     check_unknown_options!
