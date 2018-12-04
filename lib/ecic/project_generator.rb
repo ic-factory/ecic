@@ -3,7 +3,7 @@ module Ecic
   class ProjectGenerator < Thor::Group
     include Thor::Actions
     desc 'Generate a new chip project'
-  
+
     def self.source_root
       File.dirname(__FILE__) + '/../../templates/project'
     end
@@ -22,10 +22,10 @@ module Ecic
       create_file 'src/design/.gitkeep' if Dir.empty?("#{destination_root}/src/design")
       empty_directory 'src/testbench'
       create_file 'src/testbench/.gitkeep' if Dir.empty?("#{destination_root}/src/testbench")
-      empty_directory 'src/verification'
-      create_file 'src/verification/.gitkeep' if Dir.empty?("#{destination_root}/src/verification")
       empty_directory 'src/external_packages'
       create_file 'src/external_packages/.gitkeep' if Dir.empty?("#{destination_root}/src/external_packages")
+      empty_directory 'src/docs'
+      create_file 'src/docs/.gitkeep' if Dir.empty?("#{destination_root}/src/docs")
     end
 
     def git_init

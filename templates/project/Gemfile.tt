@@ -1,3 +1,9 @@
 source 'https://rubygems.org'
 ruby '<%= @ruby_version %>'
 gem 'ecic'
+
+#Guard can be used for eg. automatically generate documentation, when files
+#in a documentation folder are changed - or recompile RTL when a design file
+#is changed and run a bring-up testcase.
+# gem 'guard'
+# gem 'guard-shell'

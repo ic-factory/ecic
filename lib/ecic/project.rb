@@ -4,9 +4,9 @@ module Ecic
 
     attr_accessor :libraries
     attr_reader   :root
-    
+
     require 'pathname'
-    
+
     def initialize(root = Project::root)
       @libraries = []
       @root = root
@@ -14,9 +14,9 @@ module Ecic
 
     SCRIPT_ECIC = File.join('src',  'config', 'ecic.rb')
     LIBRARIES_CFG_SCRIPT = File.join('src',  'config', 'libraries.rb')
-    
+
     #Function that returns the root directory of a ECIC project
-    #This is used by some generators to check if a command is called 
+    #This is used by some generators to check if a command is called
     #from within an ECIC project folder
     def self.root(path = Pathname.new(Dir.pwd))
       if File.exists?(File.join(path, SCRIPT_ECIC))
@@ -49,7 +49,7 @@ module Ecic
       raise "Found multiple libraries mapped to '#{path}'" if matching_libraries.length > 1
       matching_libraries.first
     end
-      
+
     def get_library(lib_name)
       matching_libraries = libraries.select {|l| l.name.eql? lib_name }
       raise "Found multiple libraries called '#{lib_name}'" if matching_libraries.length > 1
@@ -57,7 +57,7 @@ module Ecic
     end
 
     def add_library(lib)
-      raise "A library called '#{lib.name}' already exists" if has_library?(lib)
+      raise "Library '#{lib.name}' already exists" if has_library?(lib)
       raise "A library is already mapped to '#{lib.path}'" if library_mapped_to(lib.path)
       @libraries << lib
       return true

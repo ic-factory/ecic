@@ -13,12 +13,12 @@ module Ecic
       #do not know if it is a design or testbench library.
       unless library_name.nil?
         library = project.get_library(library_name)
-        raise "Unknown library called '#{library_name}'. Please create the library before adding files to it. " if library.nil?
+        raise "Unknown library '#{library_name}'. Please generate the library before adding files to it." if library.nil?
       end
-      destination_path = Pathname.new(destination_root)      
+      destination_path = Pathname.new(destination_root)
       file_names.each { |file_name|
         src_file_info = SourceFileInfo.new(project, file_name, library)
-        raise "Library name could not be determined from the path of '#{file_name}'.\nMake sure the appropriate library has been created and specify it with the --lib option - or create an empty sources.rb file in the root directory of the library." if src_file_info.library.nil?
+        raise "Library name could not be determined from the path of '#{file_name}'.\nIf the library already exists, please specify the library name with the --lib option when adding files to it.\nTo create a new library, run 'ecic generate library' command - or create an empty sources.rb file in the root directory of the library." if src_file_info.library.nil?
         if create_library_if_missing(src_file_info.library)
           add_src_file(src_file_info, destination_path)
         else

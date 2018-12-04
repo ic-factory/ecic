@@ -1,14 +1,14 @@
 module Ecic
-  class Generate < Command    
+  class Generate < Command
     include Ecic::LibraryCreationHelper
-    
+
     #--------------------------------------------------------------------------
     # TESTBENCH generator:
     #--------------------------------------------------------------------------
 ####    class_option :verbose, :type => :boolean
 ####    desc "testbench NAME", Help.text('generate')['testbench']['short']
 ####    long_desc Help.text('generate')['testbench']['long']
-####    option :type, :banner => 'vhdl|sv|uvm', :required => true, :desc => 'Speficy the testbench type (VHDL, SystemVerilog or UVM)'
+####    option :type, :banner => 'vhdl|sv|uvm', :required => true, :desc => 'Specify the testbench type (VHDL, SystemVerilog or UVM)'
 ####    option :just_print, :type => :boolean, :aliases => '-n', :desc => "Don't actually run any commands; just print them."
 ####    def testbench(name)
 ####      puts "Implement a generator for creating a new testbench"
@@ -19,7 +19,7 @@ module Ecic
     #--------------------------------------------------------------------------
     desc "library NAME...", Help.text('generate')['library']['short']
     long_desc Help.text('generate')['library']['long']
-    
+
     option :just_print, :type => :boolean, :aliases => '-n', :desc => "Don't actually run any commands; just print them."
     def library(*names)
       begin
@@ -37,9 +37,9 @@ module Ecic
             #TBA: Add option to generate a testbench library as well
             new_lib = project.design_library(lib_name)
             if new_lib.already_exists?
-              say set_color("Library called '#{lib_name}' already exists",Thor::Shell::Color::GREEN)
+              say set_color("Library '#{lib_name}' already exists",Thor::Shell::Color::GREEN)
             else
-              shell.error set_color("Library called '#{lib_name}' could not be generated",Thor::Shell::Color::RED) unless generate_library new_lib
+              shell.error set_color("Library '#{lib_name}' could not be generated",Thor::Shell::Color::RED) unless generate_library new_lib
             end
           }
         end
@@ -48,16 +48,16 @@ module Ecic
         exit(3)
       end
     end
-    
+
     #--------------------------------------------------------------------------
     # design generator:
     #--------------------------------------------------------------------------
     desc "design NAME...", Help.text('generate')['design']['short']
     long_desc Help.text('generate')['design']['long']
-    
+
     option :just_print, :type => :boolean, :aliases => '-n', :desc => "Don't actually run any commands; just print them."
-    option :type, :type => :string, :banner => 'vhdl|sv', :required => true, :desc => 'Speficy the RTL type (VHDL or Verilog/SystemVerilog)'
-    option :lib,  :type => :string, :banner => 'LIBRARY_NAME', :required => true, :desc => 'Speficy the RTL type (VHDL or Verilog/SystemVerilog)'
+    option :type, :type => :string, :banner => 'vhdl|sv', :required => true, :desc => 'Specify the RTL type (VHDL or Verilog/SystemVerilog)'
+    option :lib,  :type => :string, :banner => 'LIBRARY_NAME', :required => true, :desc => 'Specify the RTL type (VHDL or Verilog/SystemVerilog)'
     option :types_package, :type => :boolean, :desc => "Include a package file for type and constant definitions."
 
     def design(*names)
@@ -70,7 +70,6 @@ module Ecic
         end
         project = Project.new(root_dir)
         project.load_libraries
-  #      p project.libraries
 
         lib = project.design_library(options[:lib])
         unless lib.already_exists?
@@ -109,8 +108,7 @@ module Ecic
         shell.error set_color(exc.message,Thor::Shell::Color::RED)
         exit(3)
       end
-      
+
     end
   end
 end
-
