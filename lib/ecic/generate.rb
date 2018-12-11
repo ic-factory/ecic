@@ -20,29 +20,27 @@ module Ecic
     desc "library NAME...", Help.text('generate')['library']['short']
     long_desc Help.text('generate')['library']['long']
 
+    option :path, :type => :string, :desc => 'Specify the directory path (relative to the project root) where the associated sources.rb file must be placed.'
     option :just_print, :type => :boolean, :aliases => '-n', :desc => "Don't actually run any commands; just print them."
     def library(*names)
       begin
         project_root_path = Ecic::Project::root
-  #project_root_path = Dir.pwd
-  #if false
-        if project_root_path.nil?
-          shell.error set_color("You must be within an ECIC project before calling this command",Thor::Shell::Color::RED)
-          exit(1)
-        else
-  #        shell.say "Generating library in #{project_root_path}"
-          project = Project.new(project_root_path)
-          project.load_libraries
-          names.each { |lib_name|
-            #TBA: Add option to generate a testbench library as well
-            new_lib = project.design_library(lib_name)
-            if new_lib.already_exists?
-              say set_color("Library '#{lib_name}' already exists",Thor::Shell::Color::GREEN)
-            else
-              shell.error set_color("Library '#{lib_name}' could not be generated",Thor::Shell::Color::RED) unless generate_library new_lib
-            end
-          }
-        end
+        opt = {"path" => nil}.merge(options)
+
+        raise "You must be within an ECIC project before calling this command" if project_root_path.nil?
+        raise "The --path option may not be used if multiple library names are provided" if names.length > 1
+#        shell.say "Generating library in #{project_root_path}"
+        project = Project.new(project_root_path)
+        project.load_libraries
+        names.each { |lib_name|
+          #TBA: Add option to generate a testbench library as well
+          new_lib = project.design_library(lib_name, :path => opt['path'])
+          if new_lib.already_exists?
+            say set_color("Library '#{lib_name}' already exists",Thor::Shell::Color::GREEN)
+          else
+            shell.error set_color("Library '#{lib_name}' could not be generated",Thor::Shell::Color::RED) unless generate_library new_lib
+          end
+        }
       rescue Exception => exc
         shell.error set_color(exc.message,Thor::Shell::Color::RED)
         exit(3)
@@ -85,10 +83,7 @@ module Ecic
             incl_types_pkg = yes?("Would you like to include a package for type and constant definitions for '#{design_name}'? [y/N]: ") if incl_types_pkg.nil?
           else
             incl_types_pkg ||= false
-            if incl_types_pkg
-              shell.error set_color("--types_package option does not apply for Verilog/SystemVerilog generation!",Thor::Shell::Color::RED)
-              exit(3)
-            end
+            raise "--types_package option does not apply for Verilog/SystemVerilog generation!" if incl_types_pkg
           end
           if type == 'vhdl'
             generator = DesignGenerator.new
@@ -96,8 +91,7 @@ module Ecic
           elsif type == 'sv'
             generator = SvDesignGenerator.new
           else
-            shell.error set_color("--type option must be set to either 'vhdl' or 'sv'",Thor::Shell::Color::RED)
-            exit(3)
+            raise "--type option must be set to either 'vhdl' or 'sv'"
           end
           generator.destination_root = root_dir
           generator.library = lib

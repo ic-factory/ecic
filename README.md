@@ -55,10 +55,15 @@ You can create multiple libraries with one command by specifying a list of libra
     $ ecic generate library my_lib1 my_lib2
 
 <!--
-By default, the `ecic generate library` command will also create an RTL design (VHDL component + entity + architecture or Verilog module) with the same name as the library. 
+By default, the `ecic generate library` command will also create an RTL design (VHDL component + entity + architecture or Verilog module) with the same name as the library.
 The RTL design is automatically added to the library by adding it to the `sources.rb` file, which will be created at the root of each library folder.
 -->
 A `sources.rb` file will be created at the root of each library folder, which defines the RTL files that must be associated with the given library.
+
+You should always stick to the convention of placing design libraries in subfolders under `src/design`. However, if you are e.g. porting an existing project to use the ECIC framework and all files for a design library are already placed somewhere else (and you do not wish to move them), you have two options.
+
+  1. You can choose to use the `--path` option when generating the library. This allows you to specify an alternative path in which the `sources.rb` file for the library will be created. This option can be used only if one library name is provided the the `generate library` command.
+  2. Another alternative is to generate the library as usual (without using the --path option) and then keep the `sources.rb` file athe not to keep the    n have a library   folders  folders of the same name as the
 
 To see the full list of options for the `ecic generate library` command, run `ecic generate help library`.
 
@@ -113,7 +118,7 @@ This will create the following VHDL files (relative to the project root folder):
     ./src/design/my_lib/my_subblock/my_design3-arc_rtl.vhd     # RTL architecture
 
 In this example the `--types-package` option is used to automatically include the `*-pkg-types.vhd` files without prompting the user with the option.
- 
+
 All generated VHDL files will be added to the `sources.rb` file in the given library.
 
 #### Create new SystemVerilog file(s)
@@ -159,18 +164,25 @@ and the install the dependencies for your project using Bundler:
 
 If the folder contains files that will normally be overwritten by the framework, you will be asked whether to overwrite them. If you want to keep any conflicting files, then choose `n` (no, do not overwrite) for each conflicting file. You can then move or rename the original, conflicting files and run the `ecic new PATH` command again.
 
+### Add libraries
+
+Although you can create libraries on the fly when adding existing RTL files (see next section), you might want to start by creating the necessary libraries first - as described in the `Create new RTL library` section above.
+
 ### Add existing RTL files
 
 To add an existing RTL file to the project, go to the project folder and use the `ecic addfile` commmand. This will add all the listed files to your project.
 
-You can specify the library name with the `--lib` option or rely on an implicit library name that is extracted from the full paths of the added files. In the latter case the extracted library name will be equal to the name of the directory just under `src/design` or `src/testbench`. In either case, if the library does not already exist, you will be asked to confirm the creation of it.
+You can specify the library with the `--lib` option or let ECIC try to figure out the library for you. In the latter case, the library will be determined according to the following scheme:
+
+  1. If a `sources.rb` file exists in the folder (or a parent folder) of the added RTL file, the RTL file will be added to the library that maps to that `sources.rb` file. If no library maps to the `sources.rb` file, you will by default be asked to confirm the creation of such a library. The library name will be equal to the name of the folder that contains the `sources.rb` file.
+  2. Otherwise, the extracted library name will be equal to the name of the directory just under `src/design` or `src/testbench` and you will by default be asked to confirm the creation of the library. If the RTL file is *not* placed under `src/design` or `src/testbench`, an error message will be displayed.
 
 For example, given that:
 
   * you have a Unix like terminal
   * you want to eg. add all design files that have a `.vhd` or `.sv` extention
   * all design files are placed in subfolders under a `./src/design`
-  * all files for a given RTL library are placed under a folder (of the same name) in the `./src/design`
+  * all files for a given RTL library are placed under a folder (of the same name) in `./src/design`
 
 ... then you can use the standard Unix `find` command and leave out the `--lib` option:
 
@@ -184,7 +196,7 @@ If all your VHDL designs assume to be compiled into one library called `work`, y
 
     $ ecic addfile --lib=work `find . -name "*.vhd"`
 
-When adding files to the project, the file extension (eg. .vhd) is used to determine the file type. VHDL files are expected to have a .vhd or .vhdl extension and Verilog/SystemVerilog files are expected to have a .sv og .v extension. You can also specify the file type with a `type=vhdl|sv` option, eg.:
+When adding files to the project, the file extension (eg. `.vhd`) is used to determine the file type. VHDL files are expected to have a .vhd or .vhdl extension and Verilog/SystemVerilog files are expected to have a .sv og .v extension. You can also specify the file type with a `type=vhdl|sv` option, eg.:
 
     $ ecic addfile --type=vhdl --lib=my_lib `find ./foo -name "*.*"`
 
