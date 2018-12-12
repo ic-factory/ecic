@@ -64,13 +64,18 @@ module Ecic
     end
 
     #Function used in src/confic/libraries.rb
+    def library(name, type, options={})
+      Library.new(self, name, type, options)
+    end
+
+    #Function used in src/confic/libraries.rb
     def design_library(name, options={})
       Library.new(self, name, :design, options)
     end
 
     #Function used in src/confic/libraries.rb
     def testbench_library(name, options={})
-      Library.new(self, name, :testbench, options)
+      Library.new(self, name, :tb, options)
     end
 
     def load_sources

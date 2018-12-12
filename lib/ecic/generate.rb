@@ -19,27 +19,18 @@ module Ecic
     #--------------------------------------------------------------------------
     desc "library NAME...", Help.text('generate')['library']['short']
     long_desc Help.text('generate')['library']['long']
-
-    option :path, :type => :string, :desc => 'Specify the directory path (relative to the project root) where the associated sources.rb file must be placed.'
-    option :just_print, :type => :boolean, :aliases => '-n', :desc => "Don't actually run any commands; just print them."
+    option :path, :type => :string, :default => nil, :desc => 'Specify the directory path (relative to the project root) where the associated sources.rb file must be placed.'
+    option :type, :type => :string, :default => 'design', :banner => 'design|tb', :desc => 'Specify whether to create a design or testbench library'
     def library(*names)
       begin
         project_root_path = Ecic::Project::root
-        opt = {"path" => nil}.merge(options)
-
         raise "You must be within an ECIC project before calling this command" if project_root_path.nil?
         raise "The --path option may not be used if multiple library names are provided" if names.length > 1
-#        shell.say "Generating library in #{project_root_path}"
         project = Project.new(project_root_path)
         project.load_libraries
         names.each { |lib_name|
-          #TBA: Add option to generate a testbench library as well
-          new_lib = project.design_library(lib_name, :path => opt['path'])
-          if new_lib.already_exists?
-            say set_color("Library '#{lib_name}' already exists",Thor::Shell::Color::GREEN)
-          else
-            shell.error set_color("Library '#{lib_name}' could not be generated",Thor::Shell::Color::RED) unless generate_library new_lib
-          end
+          new_lib = project.library(lib_name, options['type'].to_sym, :path => options['path'])
+          generate_library new_lib
         }
       rescue Exception => exc
         shell.error set_color(exc.message,Thor::Shell::Color::RED)
@@ -53,7 +44,7 @@ module Ecic
     desc "design NAME...", Help.text('generate')['design']['short']
     long_desc Help.text('generate')['design']['long']
 
-    option :just_print, :type => :boolean, :aliases => '-n', :desc => "Don't actually run any commands; just print them."
+#    option :just_print, :type => :boolean, :aliases => '-n', :desc => "Don't actually run any commands; just print them."
     option :type, :type => :string, :banner => 'vhdl|sv', :required => true, :desc => 'Specify the RTL type (VHDL or Verilog/SystemVerilog)'
     option :lib,  :type => :string, :banner => 'LIBRARY_NAME', :required => true, :desc => 'Specify the RTL type (VHDL or Verilog/SystemVerilog)'
     option :types_package, :type => :boolean, :desc => "Include a package file for type and constant definitions."

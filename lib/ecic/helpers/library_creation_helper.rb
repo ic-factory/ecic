@@ -1,5 +1,5 @@
 module Ecic::LibraryCreationHelper
-  
+
   def create_library_if_missing(library)
     unless library.already_exists?
       return ok_to_create_library? library
@@ -15,21 +15,17 @@ module Ecic::LibraryCreationHelper
 #    exit(2)
     return false
   end
-  
+
   def generate_library(library)
-    if library.is_valid?
-      generator = Ecic::LibraryGenerator.new
-      generator.destination_root = library.project.root
-      generator.library = library
-      generator.invoke_all
-      library.create
-    else
-      return false
-    end
+    library.create
+    generator = Ecic::LibraryGenerator.new
+    generator.destination_root = library.project.root
+    generator.library = library
+    generator.invoke_all
   end
 
   protected
-  
+
   def must_create_new_library?(library)
     return true if @always_create_library
     options = "[Ynaqh]"
@@ -56,7 +52,7 @@ module Ecic::LibraryCreationHelper
       end
     end
   end
-  
+
   def library_creation_help
     puts "        Y - yes, create the library (default)"
     puts "        n - no, continue without creating the library"
@@ -64,7 +60,7 @@ module Ecic::LibraryCreationHelper
     puts "        q - quit, abort"
     puts "        h - help, show this help"
   end
-  
+
   def is?(value) #:nodoc:
     value = value.to_s
     if value.size == 1
@@ -73,5 +69,5 @@ module Ecic::LibraryCreationHelper
       /\A(#{value}|#{value[0, 1]})\z/i
     end
   end
-  
+
 end
