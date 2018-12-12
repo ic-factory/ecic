@@ -5,7 +5,7 @@ module Ecic
     include Ecic::LibraryCreationHelper
     require 'pathname'
 
-    attr_accessor :library_name, :file_names, :project
+    attr_accessor :library_name, :file_names, :project, :force_library_creation
 
     def add_files_to_source_list
       #If a library name is given, the project must already contain a library
@@ -13,7 +13,15 @@ module Ecic
       #do not know if it is a design or testbench library.
       unless library_name.nil?
         library = project.get_library(library_name)
-        raise "Unknown library '#{library_name}'. Please generate the library before adding files to it." if library.nil?
+        if library.nil?
+          #Library does not already exist
+          if force_library_creation
+            library = project.library(library_name, :design)
+            generate_library library
+          else
+            raise "Unknown library '#{library_name}'. Please generate the library before adding files to it or use -f option to force the creation of it."
+          end
+        end
       end
       destination_path = Pathname.new(destination_root)
       file_names.each { |file_name|

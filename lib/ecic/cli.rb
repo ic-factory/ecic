@@ -61,6 +61,7 @@ module Ecic
     desc "addfile FILENAME...", Help.text('addfile')['short']
     long_desc Help.text('addfile')['long']
     option :lib, :type => :string, :default => nil, :banner => 'LIBRARY_NAME', :desc => 'Specify the name of the design library'
+    option :force_library_creation, :aliases => "-f", :type => :boolean, :default => false, :desc => 'Create library automatically, if missing'
 
     def addfile(*file_names)
       begin
@@ -69,12 +70,14 @@ module Ecic
           shell.error set_color("You must be within an ECIC project before calling this command",Thor::Shell::Color::RED)
           exit(1)
         end
+        raise "--force_library_creation option must only be used together with the --lib option." if options['force_library_creation'] and options['lib'].nil?
         project = Project.new(root_dir)
         project.load_libraries
         lib_name = options['lib']
         file_adder = FileAdder.new
         file_adder.destination_root = root_dir
         file_adder.library_name = lib_name
+        file_adder.force_library_creation = options['force_library_creation']
         file_adder.project      = project
         file_adder.file_names   = file_names
         file_adder.invoke_all
