@@ -20,7 +20,7 @@ module Ecic
     desc "library NAME...", Help.text('generate')['library']['short']
     long_desc Help.text('generate')['library']['long']
     option :path, :type => :string, :default => nil, :desc => 'Specify the directory path (relative to the project root) where the associated sources.rb file must be placed.'
-    option :type, :type => :string, :default => 'design', :banner => 'design|tb', :desc => 'Specify whether to create a design or testbench library'
+    option :type, :type => :string, :default => 'design', :enum => ['design','tb'], :desc => 'Specify whether to create a design or testbench library'
     def library(*names)
       begin
         project_root_path = Ecic::Project::root
@@ -45,8 +45,8 @@ module Ecic
     long_desc Help.text('generate')['design']['long']
 
 #    option :just_print, :type => :boolean, :aliases => '-n', :desc => "Don't actually run any commands; just print them."
-    option :type, :type => :string, :banner => 'vhdl|sv', :required => true, :desc => 'Specify the RTL type (VHDL or Verilog/SystemVerilog)'
-    option :lib,  :type => :string, :banner => 'LIBRARY_NAME', :required => true, :desc => 'Specify the RTL type (VHDL or Verilog/SystemVerilog)'
+    option :type, :type => :string, :required => true, :enum => ['vhdl','sv'], :desc => 'Specify the RTL type (VHDL or Verilog/SystemVerilog)'
+    option :lib,  :type => :string, :banner => 'LIBRARY_NAME', :required => true, :desc => 'Name of the targeted library'
     option :types_package, :type => :boolean, :desc => "Include a package file for type and constant definitions."
 
     def design(*names)

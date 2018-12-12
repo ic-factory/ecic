@@ -2,7 +2,7 @@ module Ecic
   class CLI < Command
 
     include Ecic::SourceListUpdater
-      
+
     class << self
       def help(shell, subcommand = false)
         shell.say "Usage: ecic COMMAND [ARGS]"
@@ -33,9 +33,9 @@ module Ecic
       generator = ProjectGenerator.new
       generator.destination_root = path
       generator.invoke_all
-      
+
       shell.say "\nTo install the required packages in your project, please run:\n   cd #{path}; bundle install\n", Thor::Shell::Color::BOLD
-      #TBA: invoke installation by eg. calling 'bundler install' from within the generated project folder    
+      #TBA: invoke installation by eg. calling 'bundler install' from within the generated project folder
 #      Bundler.with_clean_env do
 #        Dir.chdir(path) do
 #          `bundle install`

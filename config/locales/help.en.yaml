@@ -3,7 +3,7 @@ help:
     short: Generate a new project in PATH
     long:  |
       Creates a new chip project in PATH.
-   
+
       Example: ecic new my_project
 
       This creates a new ECIC project in ./my_project
@@ -12,7 +12,7 @@ help:
     long:  |
       Displays a list of the libraries in the project, optionally
       along with a list of source files for each library.
-   
+
       Example: ecic libraries --include-source-files --format=json
 
       Prints a JSON formatted list of all libraries, including the source files in each library.
@@ -41,29 +41,29 @@ help:
         ecic [TAB]
         ecic generate [TAB]
         ecic generate design [TAB]
-        ecic generate design --[TAB]      
-      
+        ecic generate design --[TAB]
+
     script:
-      short: Generate script that can be eval to setup auto-completion      
+      short: Generate script that can be eval to setup auto-completion
       long: |
         To use, add the following to your ~/.bashrc or ~/.profile
 
-          eval $(ecic completion script)      
+          eval $(ecic completion script)
 
   addfile:
     short: Add existing design and testbench files to the project
     long: |
-      Add one or more existing design files to a given library in the project
+      Adds one or more existing design files to a given library in the project.
 
       Example: ecic addfile --lib=my_lib ./foo/bar/some_design.sv ../toto/kuku.vhd
-  
-      This adds the ./foo/bar/some_design.sv ../toto/kuku.vhd files to the library 
-      called 'my_lib' by adding these to the sources.rb file of the libray.
-  
+
+      This adds the ./foo/bar/some_design.sv ../toto/kuku.vhd files to the library
+      called 'my_lib' by adding these to the sources.rb file of the library.
+
       Although all files that belong to a given library should be placed in the
       folder for that library, you can specify files that are placed anywhere
       in your file system.
-      
+
       If an added file is located outside the project folder, an absolute path will be used by default.
 
   project:
@@ -76,33 +76,33 @@ help:
     testbench:
       short: Create a new testbench
       long: |
-        Create a new VHDL, SystemVerilog or UVM testbench.
+        Creates a new VHDL, SystemVerilog or UVM testbench.
         The testbench type MUST be defined with the --type option.
 
         Example: ecic generate testbench my_tb --type=uvm --verbose
 
         This creates a new UVM testbench called 'my_tb' in ./src/testbench/my_tb and prints info along the way
-        
+
     library:
       short: Create a new library
       long: |
-            Create a new VHDL/SystemVerilog library.
-            
+            Creates a new VHDL/SystemVerilog library for either a design or testbench.
+
             Example: ecic generate library lib1 lib2 lib3...
 
-            This creates the given libraries in the ./src/design/ directory of 
+            This creates the given libraries in the ./src/design/ directory of
             your project and adds the libraries to ./src/config/libraries.rb
-            
+
     design:
       short: Create a new RTL design
       long: |
-            Create a new VHDL/SystemVerilog design.
-            
-            Example: ecic generate design --type=vhdl --library=some_lib design1 sub_block/design2
+            Creates a new VHDL/SystemVerilog design.
+
+            Example: ecic generate design --type=vhdl --lib=some_lib design1 sub_block/design2
 
             This creates the component, entity and architecture files for two designs called 'design1' and 'design2'.
             An optional types and constants definition file may also be created for each design.
             The files for 'design1' will be placed under 'src/design/some_lib' whereas the files for 'design2'
             will be placed in 'src/design/some_lib/sub_block'.
-            
+
             The RTL files are automatically added to the project and the given library will be created and added as well if needed.
