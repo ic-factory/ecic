@@ -60,7 +60,7 @@ module Ecic
     #--------------------------------------------------------------------------
     desc "addfile FILENAME...", Help.text('addfile')['short']
     long_desc Help.text('addfile')['long']
-    option :lib, :type => :string, :banner => 'LIBRARY_NAME', :desc => 'Specify the name of the design library'
+    option :lib, :type => :string, :default => nil, :banner => 'LIBRARY_NAME', :desc => 'Specify the name of the design library'
 
     def addfile(*file_names)
       begin
@@ -69,12 +69,9 @@ module Ecic
           shell.error set_color("You must be within an ECIC project before calling this command",Thor::Shell::Color::RED)
           exit(1)
         end
-
-        opt = {"lib" => nil}.merge(options)
-
         project = Project.new(root_dir)
         project.load_libraries
-        lib_name = opt['lib']
+        lib_name = options['lib']
         file_adder = FileAdder.new
         file_adder.destination_root = root_dir
         file_adder.library_name = lib_name
