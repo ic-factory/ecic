@@ -11,7 +11,6 @@ module Ecic
     end
 
     def create_library_directory
-      @library_name = @library.name
       src_list_file = File.expand_path("#{destination_root}/#{@library.path}/sources.rb")
       template("src/design/lib/sources.rb.tt", src_list_file) unless File.exist?(src_list_file)
     end

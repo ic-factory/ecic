@@ -8,12 +8,8 @@ module Ecic
     def rootdir
       begin
         project_root_path = Ecic::Project::root
-        if project_root_path.nil?
-          shell.error set_color("You must be within an ECIC project before calling this command",Thor::Shell::Color::RED)
-          exit(1)
-        else
-         say project_root_path
-        end
+        raise "You must be within an ECIC project before calling this command" if project_root_path.nil?
+        say project_root_path
       rescue Exception => exc
         shell.error set_color(exc.message,Thor::Shell::Color::RED)
         exit(3)
