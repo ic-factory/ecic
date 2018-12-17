@@ -4,13 +4,13 @@
 # 3. Add option to specify whether separate files must be used (by default) for VHDL entities
 #    and architectures.
 # 4. Make sure the 'new' action calls 'bundle install' in new project.
-# 5. What should the file format be for libraries and source file config files? We want 
+# 5. What should the file format be for libraries and source file config files? We want
 #    to be able to automatically add content to these files.
 #        sources.yaml
 #        sources.yaml.erb
 #        sources.rb <- This might be the best option (and have a convention for what it should contain).
 #        libraries.rb <- This might be the best option.
-# If the user tries to call the 'generate' command outside a project, 
+# If the user tries to call the 'generate' command outside a project,
 # an error message must be returned stating that this command can only be called from within a project.
 
 $:.unshift(File.expand_path("../", __FILE__))
@@ -29,6 +29,7 @@ module Ecic
   autoload :SvDesignGenerator, "ecic/sv_design_generator"
   autoload :ProjectGenerator, "ecic/project_generator"
   autoload :LibraryGenerator, "ecic/library_generator"
+  autoload :LibraryListUpdater, "ecic/library_list_updater"
   autoload :SourceListUpdater, "ecic/helpers/source_list_updater"
   autoload :LibraryCreationHelper, "ecic/helpers/library_creation_helper"
   autoload :SourceFile, "ecic/source_file"

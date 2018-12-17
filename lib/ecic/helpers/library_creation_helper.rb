@@ -24,6 +24,26 @@ module Ecic::LibraryCreationHelper
     generator.invoke_all
   end
 
+  def library_creation_cmd(library)
+    case library.path.to_s
+    when "src/design/#{library.name}"
+      cmd = "design_library('#{library.name}'"
+    when "src/testbench/#{library.name}"
+      cmd = "testbench_library('#{library.name}'"
+    else
+      if library.is_a_testbench?
+        cmd = "testbench_library('#{library.name}'"
+      else
+        cmd = "design_library('#{library.name}'"
+      end
+      cmd += ", :path => '#{library.path}'"
+    end
+    unless library.scopes.nil?
+      cmd += ", :scope => " + library.scopes.to_s
+    end
+    cmd += ").create\n"
+  end
+
   protected
 
   def must_create_new_library?(library)

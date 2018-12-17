@@ -21,6 +21,7 @@ module Ecic
     long_desc Help.text('generate')['library']['long']
     option :path, :type => :string, :default => nil, :desc => 'Specify the directory path (relative to the project root) where the associated sources.rb file must be placed.'
     option :type, :type => :string, :default => 'design', :enum => ['design','tb'], :desc => 'Specify whether to create a design or testbench library'
+    option :scope, :type => :string, :default => nil, :desc => 'Specify the scope in which the library must be available'
     def library(*names)
       begin
         project_root_path = Ecic::Project::root
@@ -29,9 +30,23 @@ module Ecic
         project = Project.new(project_root_path)
         project.load_libraries
         names.each { |lib_name|
-          new_lib = project.library(lib_name, options['type'].to_sym, :path => options['path'])
+          new_lib = project.library(lib_name, options['type'].to_sym, :path => options['path'], :scope => [options['scope']])
           if new_lib.already_exists?
-            say set_color("Library '#{lib_name}' already exists",Thor::Shell::Color::GREEN)
+            existing_lib = project.get_library(new_lib.name)
+            if options['scope'].nil?
+              say set_color("Library '#{new_lib.name}' already exists",Thor::Shell::Color::GREEN)
+            else
+              if existing_lib.has_scope?(options['scope'])
+                say set_color("Library '#{new_lib.name}' with '#{options['scope']}' scope already exists",Thor::Shell::Color::GREEN)
+              else
+                say set_color("Adding '#{options['scope']}' scope to library '#{new_lib.name}'",Thor::Shell::Color::GREEN)
+                existing_lib.add_scope(options['scope'])
+                generator = LibraryListUpdater.new
+                generator.destination_root = project_root_path
+                generator.library = existing_lib
+                generator.invoke_all
+              end
+            end
           else
             generate_library new_lib
           end

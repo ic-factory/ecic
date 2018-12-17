@@ -2,19 +2,37 @@ module Ecic
 
   class Library
 
+    require 'set'
+
     attr_accessor :name, :path, :project
     attr_accessor :source_files
     attr_reader   :type
 
     def initialize(project, name, type, options={})
-      opt = {:path => nil}.merge(options)
+      opt = {:path => nil, :scope => nil}.merge(options)
       @project = project
+      @scopes = Set.new
+      opt[:scope].to_a.each do |s|
+        @scopes.add(s)
+      end
       @name = name
       @type = type
       default_path = {:tb      => "src/testbench/#{@name}",
                       :design  => "src/design/#{@name}"}
       @path = opt[:path] || default_path[@type]
       @source_files = []
+    end
+
+    def has_scope?(scope)
+      @scopes.include? scope
+    end
+
+    def add_scope(scope)
+      @scopes.add(scope)
+    end
+
+    def scopes
+      @scopes.to_a.sort
     end
 
     def create
