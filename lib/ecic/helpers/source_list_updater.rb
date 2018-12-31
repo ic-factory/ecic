@@ -1,21 +1,39 @@
 module Ecic::SourceListUpdater
   def add_src_file(src_file_info, dest_root)
-    #TBA: IF THE absolute_file_path IS OUTSIDE THE PROJECT FOLDER, THEN THE ABSOLUTE FILE PATH MUST BE USED INSTEAD OF 'relative_file_path'
-    src_list_filepath = src_file_info.sources_file_path
+    #If the absolute_file_path is outside the project folder, the absolute
+    #file path must be used instead of 'relative_file_path'
+    src_list_filepath = dest_root.join(src_file_info.sources_file_path)
     absolute_file_path = src_file_info.absolute_path
-#    puts "src_list_filepath=#{src_list_filepath}"
-#    puts "absolute_file_path=#{absolute_file_path}"
-#    puts "dest_root=#{dest_root}"
     if src_file_info.is_outside_project?
       used_file_ref = absolute_file_path.to_s
     else
       used_file_ref = absolute_file_path.relative_path_from(dest_root.join(src_list_filepath.dirname)).to_s
     end
-#        puts "relative_file_path = #{relative_file_path}"
-#        relative_src_list_filepath = src_list_filepath.relative_path_from(dest_root).to_s
-#    puts "relative_src_list_filepath = relative_src_list_filepath"
-#    src_file = "src/design/#{library_name}/sources.rb.tfj"
-    create_file src_list_filepath unless File.exists?(File.join(dest_root,src_list_filepath))
-    append_to_file src_list_filepath, "source_file('#{used_file_ref}')\n"
+    create_file src_list_filepath unless File.exists?(src_list_filepath)
+    #Get existing source file or add a new one to the library, if no matching source file exists:
+    src_file = src_file_info.library.source_file(used_file_ref, :scope => src_file_info.scopes)
+    match_pattern = "source_file\\(\'#{src_file.path}\'"
+    file_content = File.read(src_list_filepath)
+    new_file_content = file_content.gsub(/(#{match_pattern}.+)/, src_file_text(src_file))
+    unless $1
+      #No match was found, so just add a new line to the sources.rb file:
+      append_to_file src_list_filepath, src_file_text(src_file) + "\n"
+    else
+      #A match was found, so write the updated content to the file:
+      File.open(src_list_filepath, "w") {|file| file.puts new_file_content }
+    end
   end
+
+  private
+
+  def src_file_text(src_file)
+    text = "source_file('#{src_file.path}'"
+    unless src_file.scopes.nil?
+      text += ", :scope => " + src_file.scopes.to_s
+    end
+    text += ")"
+  end
+
+
+
 end

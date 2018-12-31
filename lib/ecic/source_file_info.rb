@@ -5,14 +5,20 @@ module Ecic
     require 'pathname'
 
     attr_reader :absolute_path, :library
-    
+
     STANDARD_LIBRARY_FOLDERS_LIST = ["src/design", "src/testbench"]
 
-    def initialize(project, file_name, library=nil)
+    def initialize(project, file_name, library=nil, scope=nil)
       @project = project
-      @absolute_path = Pathname.new(File.expand_path(file_name))      
+      @absolute_path = Pathname.new(File.expand_path(file_name))
       @relative_path_from_project = @absolute_path.relative_path_from(Pathname.new("#{@project.root}"))
       @library = library || get_library_from_file_path
+      @scope = scope
+      @scopes = Set.new
+      scope.each do |s|
+        @scopes.add(s)
+      end
+
     end
 
     #TBA: Make sure this function works for libraries under src/testbench as
@@ -21,7 +27,7 @@ module Ecic
     #project folder structure.
     def get_library_from_file_path
       return nil if is_outside_project?
-      sources_file_dir = find_sources_file_dir 
+      sources_file_dir = find_sources_file_dir
       if sources_file_dir
         #A sources.rb file was found."
         #Check if an existing library is already mapped to that folder. If so, return that library
@@ -44,14 +50,14 @@ module Ecic
 #      @relative_path_from_project.to_s.split('/')[0] == ".."
       /\A\.\./.match(@relative_path_from_project.to_s)
     end
- 
+
 #    def within_expected_folder?
 #      rel_design_path_list = @relative_path_from_project.to_s.split('/')
 #      return nil if rel_design_path_list.length < 3
 #      str = [rel_design_path_list.first(2)].join('/')
 #      STANDARD_LIBRARY_FOLDERS_LIST.include? str
 #    end
-    
+
     #Function that looks for a sources.rb file within the project
     def find_sources_file_dir(dir = @relative_path_from_project.dirname)
       return nil if is_outside_project?
@@ -74,7 +80,7 @@ module Ecic
       Pathname.new([rel_design_path_list.first(3)].join('/'))
     end
 
-    #Function that returns the type of library that 
+    #Function that returns the type of library that
     def get_library_type_from_file_path
       #Get the first directory name after src/design or src/testbench:
       rel_design_path_list = @relative_path_from_project.to_s.split('/')
@@ -94,5 +100,10 @@ module Ecic
 #      puts "#{@library.path}/sources.rb"
       Pathname.new("#{@library.path}/sources.rb")
     end
+
+    def scopes
+      @scopes.to_a.sort
+    end
+
   end
 end

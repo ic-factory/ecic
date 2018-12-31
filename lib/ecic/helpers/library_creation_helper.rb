@@ -1,19 +1,13 @@
 module Ecic::LibraryCreationHelper
 
   def create_library_if_missing(library)
-    unless library.already_exists?
-      return ok_to_create_library? library
-    end
-    return true
+    return true if library.already_exists?
+    ok_to_create_library? library
   end
 
   def ok_to_create_library?(library)
-    if must_create_new_library? library
-      return generate_library library
-    end
-#    shell.error set_color("Operation aborted!",Thor::Shell::Color::RED)
-#    exit(2)
-    return false
+    return false unless user_accepts_library_creation? library
+    generate_library library
   end
 
   def generate_library(library)
@@ -46,7 +40,7 @@ module Ecic::LibraryCreationHelper
 
   protected
 
-  def must_create_new_library?(library)
+  def user_accepts_library_creation?(library)
     return true if @always_create_library
     options = "[Ynaqh]"
     loop do

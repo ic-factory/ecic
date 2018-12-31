@@ -21,6 +21,7 @@ module Ecic
                       :design  => "src/design/#{@name}"}
       @path = opt[:path] || default_path[@type]
       @source_files = []
+      @sources_have_been_loaded = false
     end
 
     def has_scope?(scope)
@@ -42,6 +43,10 @@ module Ecic
 
     def already_exists?
       @project.has_library?(self)
+    end
+
+    def sources_have_been_loaded?
+      return @sources_have_been_loaded
     end
 
     def to_str(options={})
@@ -69,7 +74,8 @@ module Ecic
       src_file = File.join(@project.root, @path, 'sources.rb')
       if File.exists?(src_file)
         begin
-          #puts "\#Reading #{src_file} ..."
+          @sources_have_been_loaded = true
+#          puts "\#Reading #{src_file} ..."
           eval File.read(src_file)
         rescue Exception => exc
           raise "Syntax error occurred while reading #{src_file}: #{exc.message}"
@@ -83,12 +89,26 @@ module Ecic
       @type == :tb
     end
 
+
+
     #Function used in sources.rb file of each library
-    def source_file(path)
-#      puts "Creating new source file"
-      new_src = SourceFile.new(self, path)
-      source_files << new_src
-      new_src
+    def source_file(path, options={})
+      opt = {:scope => nil}.merge(options)
+#      puts "test1"
+      if has_source_file?(path)
+#        puts "#{path} already exists"
+        src_file = get_src_file(path)
+#        p opt[:scope]
+        opt[:scope].to_a.each do |s|
+          src_file.add_scope(s)
+        end
+#p src_file.scopes
+      else
+#        puts "Creating new source file: #{path}"
+        src_file = SourceFile.new(self, path, options)
+        source_files << src_file
+      end
+      src_file
     end
 
     ###########################################################################
@@ -103,6 +123,12 @@ module Ecic
       raise "Library type must be either 'design' (default) or 'tb' (=testbench)" unless [:design, :tb].include?(@type)
     end
 
+    def get_src_file(path)
+#      puts "searching for #{path} match ..."
+      matching_files = source_files.select {|s| s.path.eql? path }
+      raise "Found multiple source files with path '#{path}'" if matching_files.length > 1
+      matching_files.first
+    end
 
     ###########################################################################
     private
@@ -112,6 +138,12 @@ module Ecic
       validate_name
       validate_type
     end
+
+
+    def has_source_file?(path)
+      source_files.any? {|s| s.path.eql? path}
+    end
+
 
   end
 end

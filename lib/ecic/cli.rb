@@ -62,7 +62,7 @@ module Ecic
     long_desc Help.text('addfile')['long']
     option :lib, :type => :string, :default => nil, :banner => 'LIBRARY_NAME', :desc => 'Specify the name of the design library'
     option :force_library_creation, :aliases => "-f", :type => :boolean, :default => false, :desc => 'Create library automatically, if missing'
-
+    option :scope, :type => :string, :default => nil, :desc => 'Specify the scope in which the file must be available'
     def addfile(*file_names)
       begin
         root_dir = Project::root
@@ -77,6 +77,7 @@ module Ecic
         file_adder = FileAdder.new
         file_adder.destination_root = root_dir
         file_adder.library_name = lib_name
+        file_adder.scope = [options['scope']]
         file_adder.force_library_creation = options['force_library_creation']
         file_adder.project      = project
         file_adder.file_names   = file_names
