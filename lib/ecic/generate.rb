@@ -19,8 +19,8 @@ module Ecic
     #--------------------------------------------------------------------------
     desc "library NAME...", Help.text('generate')['library']['short']
     long_desc Help.text('generate')['library']['long']
-    option :path, :type => :string, :default => nil, :desc => 'Specify the directory path (relative to the project root) where the associated sources.rb file must be placed.'
-    option :type, :type => :string, :default => 'design', :enum => ['design','tb'], :desc => 'Specify whether to create a design or testbench library'
+    option :path, :type => :string, :default => nil, :desc => 'Specify the directory where the associated sources.rb file must be placed.'
+    option :type, :type => :string, :default => 'design', :enum => ['design','testbench'], :desc => 'Specify whether to create a design or testbench library'
     option :scope, :type => :string, :default => nil, :desc => 'Specify the scope in which the library must be available'
     def library(*names)
       begin
@@ -30,7 +30,12 @@ module Ecic
         project = Project.new(project_root_path)
         project.load_libraries
         names.each { |lib_name|
-          new_lib = project.library(lib_name, options['type'].to_sym, :path => options['path'], :scope => [options['scope']])
+          #The Library constructor expects either an absolute path or a path
+          #that is relative to the project - whereas the CLI expects an
+          #absolute path - or a path relative to where the command is called
+          #from.
+          lib_path = resolved_path(project.root, options['path'])
+          new_lib = project.library(lib_name, options['type'].to_sym, :path => lib_path, :scope => [options['scope']])
           if new_lib.already_exists?
             existing_lib = project.get_library(new_lib.name)
             if options['scope'].nil?

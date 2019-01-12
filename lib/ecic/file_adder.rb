@@ -28,7 +28,7 @@ module Ecic
         src_file_info = SourceFileInfo.new(project, file_name, library, scope)
         raise "Library name could not be determined from the path of '#{file_name}'.\nIf the library already exists, please specify the library name with the --lib option when adding files to it.\nTo create a new library, run 'ecic generate library' command - or create an empty sources.rb file in the root directory of the library." if src_file_info.library.nil?
         if create_library_if_missing(src_file_info.library)
-          #Load the list of source files for th given library, unless the list of sources has already been loaded once.
+          #Load the list of source files for the given library, unless the list of sources has already been loaded once.
           src_file_info.library.load_sources unless src_file_info.library.sources_have_been_loaded?
           add_src_file(src_file_info, destination_path)
         else

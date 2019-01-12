@@ -18,22 +18,15 @@ module Ecic::LibraryCreationHelper
     generator.invoke_all
   end
 
+  #Function that returns the string that must be added to a libraries.rb file
+  #when adding/creating a new library.
   def library_creation_cmd(library)
-    case library.path.to_s
-    when "src/design/#{library.name}"
-      cmd = "design_library('#{library.name}'"
-    when "src/testbench/#{library.name}"
-      cmd = "testbench_library('#{library.name}'"
-    else
-      if library.is_a_testbench?
-        cmd = "testbench_library('#{library.name}'"
-      else
-        cmd = "design_library('#{library.name}'"
-      end
+    cmd = "#{library.type.to_s}_library('#{library.name}'"
+    unless path_maps_to_default_path?(library)
       cmd += ", :path => '#{library.path}'"
     end
-    unless library.scopes.nil?
-      cmd += ", :scope => " + library.scopes.to_s
+    if library.scopes.any?
+      cmd += ", :scope => #{library.scopes.to_s}"
     end
     cmd += ").create\n"
   end
@@ -83,5 +76,23 @@ module Ecic::LibraryCreationHelper
       /\A(#{value}|#{value[0, 1]})\z/i
     end
   end
+
+  private
+
+    #The path to a library must be the path relative to the project, unless
+    #the library is placed outside the project (in which case the absolute path
+    #must be used)
+    def resolved_path(root, path)
+      return nil if path.nil?
+      absolute_path = Pathname.new(File.expand_path(path))
+      relative_path_from_project = absolute_path.relative_path_from(Pathname.new(root))
+      #If the path is outside the project, return the absolute path and
+      #otherwise return the path relative to the project.
+      /\A\.\./.match(relative_path_from_project.to_s) ? absolute_path : relative_path_from_project
+    end
+
+    def path_maps_to_default_path?(library)
+      library.path == library.default_path
+    end
 
 end

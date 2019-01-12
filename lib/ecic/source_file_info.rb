@@ -23,10 +23,9 @@ module Ecic
 
     #TBA: Make sure this function works for libraries under src/testbench as
     #well and make sure it returns nil, if the library name cannot be determined.
-    #TBA: Update this function to first look for any sources.rb files within the
-    #project folder structure.
     def get_library_from_file_path
       return nil if is_outside_project?
+      #First look for any sources.rb files within the project folder structure.
       sources_file_dir = find_sources_file_dir
       if sources_file_dir
         #A sources.rb file was found."
@@ -42,7 +41,7 @@ module Ecic
       end
       unless lib_dir.nil?
         lib_name = lib_dir.basename.to_s
-        Ecic::Library.new(@project, lib_name, get_library_type_from_file_path, :path => lib_dir)
+        Ecic::Library.new(@project, lib_name, get_library_type_from_file_path, :path => lib_dir.to_s, :scope => @scope)
       end
     end
 
@@ -80,25 +79,25 @@ module Ecic
       Pathname.new([rel_design_path_list.first(3)].join('/'))
     end
 
-    #Function that returns the type of library that
+    #Function that returns the type of library
     def get_library_type_from_file_path
       #Get the first directory name after src/design or src/testbench:
       rel_design_path_list = @relative_path_from_project.to_s.split('/')
       return nil if rel_design_path_list.length < 2
       case [rel_design_path_list.first(2)].join('/')
-      when "src/testbench"
-        return :testbench
-      when "src/design"
-        return :design
-      else
-        return :design
+        when "src/testbench"
+          return :testbench
+        when "src/design"
+          return :design
+        else
+          return :design
       end
     end
 
     def sources_file_path
       return nil if @library.nil?
-#      puts "#{@library.path}/sources.rb"
-      Pathname.new("#{@library.path}/sources.rb")
+#      puts "#{@library.absolute_path}/sources.rb"
+      Pathname.new("#{@library.absolute_path}/sources.rb")
     end
 
     def scopes

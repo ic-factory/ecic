@@ -17,11 +17,15 @@ module Ecic
       end
       @name = name
       @type = type
-      default_path = {:testbench      => "src/testbench/#{@name}",
-                      :design  => "src/design/#{@name}"}
-      @path = opt[:path] || default_path[@type]
+      @path = opt[:path] || default_path
       @source_files = []
       @sources_have_been_loaded = false
+    end
+
+    def default_path
+      paths = {:testbench => "src/testbench/#{@name}",
+               :design    => "src/design/#{@name}"}
+      paths[@type]
     end
 
     def has_scope?(scope)
@@ -71,7 +75,7 @@ module Ecic
     end
 
     def load_sources
-      src_file = File.join(@project.root, @path, 'sources.rb')
+      src_file = File.join(absolute_path, 'sources.rb')
       if File.exists?(src_file)
         begin
           @sources_have_been_loaded = true
@@ -109,6 +113,12 @@ module Ecic
         source_files << src_file
       end
       src_file
+    end
+
+    #Function to return the absolute path to the library.
+    # (Note: The @path variable may or may not contain an absolute path)
+    def absolute_path
+      Pathname.new(@path).absolute? ? @path : File.expand_path("#{@project.root}/#{@path}")
     end
 
     ###########################################################################

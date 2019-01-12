@@ -10,7 +10,7 @@ module Ecic
 
     def update
       libraries_file = File.expand_path("#{destination_root}/src/config/libraries.rb")
-      cmd = library_creation_cmd(@library)
+      cmd = library_creation_cmd(@library).delete!("\n")
       match_start = @library.is_a_testbench? ? 'testbench_library' : 'design_library'
       lib_filename = 'src/config/libraries.rb'
       gsub_file lib_filename, /#{match_start}\(\'#{@library.name}\'.+/, cmd
