@@ -17,7 +17,7 @@ module Ecic
       end
       @name = name
       @type = type
-      default_path = {:tb      => "src/testbench/#{@name}",
+      default_path = {:testbench      => "src/testbench/#{@name}",
                       :design  => "src/design/#{@name}"}
       @path = opt[:path] || default_path[@type]
       @source_files = []
@@ -86,7 +86,7 @@ module Ecic
     end
 
     def is_a_testbench?
-      @type == :tb
+      @type == :testbench
     end
 
 
@@ -120,7 +120,7 @@ module Ecic
     end
 
     def validate_type
-      raise "Library type must be either 'design' (default) or 'tb' (=testbench)" unless [:design, :tb].include?(@type)
+      raise "Library type must be either 'design' (default) or 'tb' (=testbench)" unless [:design, :testbench].include?(@type)
     end
 
     def get_src_file(path)

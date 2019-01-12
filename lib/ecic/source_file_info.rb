@@ -87,7 +87,7 @@ module Ecic
       return nil if rel_design_path_list.length < 2
       case [rel_design_path_list.first(2)].join('/')
       when "src/testbench"
-        return :tb
+        return :testbench
       when "src/design"
         return :design
       else

@@ -75,7 +75,7 @@ module Ecic
 
     #Function used in src/confic/libraries.rb
     def testbench_library(name, options={})
-      Library.new(self, name, :tb, options)
+      Library.new(self, name, :testbench, options)
     end
 
     def load_sources
