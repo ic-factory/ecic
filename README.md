@@ -1,6 +1,6 @@
 # Easy IC
 
-## NOTE: this project has just been started. Hence, a few of the features described below have not yet been implemented.
+### NOTE: this project has just been started. Hence, a few features described below have not yet been implemented.
 
 ECIC is pronounced '`Easy IC`' and is an open-source, cross-platform framework for developing digital ASIC and FPGA designs. It enables you to quickly start a new IC project that is independent of both IC tool vendors and technology (FPGA/ASIC). ECIC creates a suitable project folder/file structure and provides a user friendly flow for configuring the project, fast compilation of RTL files etc.. It also provides generators for generating eg. new RTL files, libraries and testbenches for both VHDL, SystemVerilog and UVM.
 
